@@ -25,7 +25,7 @@ export default function Home() {
         link="/products"
         linkText="مشاهده محصولات"
       />
-      <Navbar />
+      {/* <Navbar /> */}
       <Hero />
       <Intro />
       <ServiceSlider />

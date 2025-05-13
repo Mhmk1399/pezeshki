@@ -12,6 +12,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import MegaMenu from "./megaMenu";
 import Dropdown from "./dropdown";
+import Link from 'next/link';
 
 // Fake data structure for categories (same as in MegaMenu.tsx)
 interface SubCategory {
@@ -26,6 +27,12 @@ interface Category {
   slug: string;
   image: string;
   subCategories: SubCategory[];
+}
+
+// Define menu item interface
+interface MenuItem {
+  text: string;
+  href: string;
 }
 
 // Sample data
@@ -112,12 +119,13 @@ const Navbar: React.FC = () => {
   const megaMenuRef = useRef<HTMLDivElement | null>(null);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-  const menuItems = [
-    "صفحه اصلـی",
-    "خدمات ویژه",
-    "مجله آموزشی",
-    "درباره ما",
-    "تماس با ما",
+  // Updated menu items with href
+  const menuItems: MenuItem[] = [
+    { text: "صفحه اصلـی", href: "/" },
+    { text: "خدمات ویژه", href: "#" },
+    { text: "مجله آموزشی", href: "/blog" },
+    { text: "درباره ما", href: "/about" },
+    { text: "تماس با ما", href: "/contact" },
   ];
 
   // Clear timeouts on unmount
@@ -267,37 +275,39 @@ const Navbar: React.FC = () => {
             <li
               key={index}
               ref={
-                item === "خدمات ویژه"
+                item.text === "خدمات ویژه"
                   ? megaMenuTriggerRef
-                  : item === "مجله آموزشی"
+                  : item.text === "مجله آموزشی"
                   ? dropdownTriggerRef
                   : null
               }
               className="cursor-pointer hover:text-pink-500 relative"
-              onMouseEnter={() => handleMouseEnter(item)}
+              onMouseEnter={() => handleMouseEnter(item.text)}
               onMouseLeave={
-                item === "خدمات ویژه"
+                item.text === "خدمات ویژه"
                   ? handleMegaMenuLeave
-                  : item === "مجله آموزشی"
+                  : item.text === "مجله آموزشی"
                   ? handleDropdownLeave
                   : undefined
               }
             >
-              <div className="flex items-center gap-1">
-                {item}
-                {(item === "خدمات ویژه" || item === "مجله آموزشی") && (
-                  <ChevronDown
-                    className={`w-4 h-4 transition-transform duration-300 ${
-                      (item === "خدمات ویژه" && isMegaMenuOpen) ||
-                      (item === "مجله آموزشی" && isDropdownOpen)
-                        ? "transform rotate-180"
-                        : ""
-                    }`}
-                  />
-                )}
-              </div>
+              <Link href={item.href}>
+                <div className="flex items-center gap-1">
+                  {item.text}
+                  {(item.text === "خدمات ویژه" || item.text === "مجله آموزشی") && (
+                    <ChevronDown
+                      className={`w-4 h-4 transition-transform duration-300 ${
+                        (item.text === "خدمات ویژه" && isMegaMenuOpen) ||
+                        (item.text === "مجله آموزشی" && isDropdownOpen)
+                          ? "transform rotate-180"
+                          : ""
+                      }`}
+                    />
+                  )}
+                </div>
+              </Link>
 
-              {item === "مجله آموزشی" && isDropdownOpen && (
+              {item.text === "مجله آموزشی" && isDropdownOpen && (
                 <div
                   className="absolute top-full right-0"
                   ref={dropdownRef}
@@ -315,8 +325,9 @@ const Navbar: React.FC = () => {
                 </div>
               )}
             </li>
-          ))}        </ul>
-
+          ))}
+        </ul>
+        
         <div className="hidden md:flex gap-4 items-center">
           <span className="text-gray-700 font-medium">۰۹۱۲۳۴۵۶۷۸۹</span>
           <Phone className="w-5 h-5 text-black cursor-pointer" />
@@ -358,13 +369,13 @@ const Navbar: React.FC = () => {
             <ul className="space-y-4">
               {menuItems.map((item, index) => (
                 <li key={index} className="py-2">
-                  {item === "خدمات ویژه" ? (
+                                   {item.text === "خدمات ویژه" ? (
                     <div>
                       <button
                         className="flex items-center justify-between w-full text-right"
                         onClick={() => toggleCategory(0)}
                       >
-                        <span className="font-medium">{item}</span>
+                        <span className="font-medium">{item.text}</span>
                         <ChevronLeft
                           className={`w-5 h-5 transition-transform duration-300 ${
                             expandedCategory === 0 ? "transform rotate-90" : ""
@@ -431,13 +442,13 @@ const Navbar: React.FC = () => {
                         )}
                       </AnimatePresence>
                     </div>
-                  ) : item === "مجله آموزشی" ? (
+                  ) : item.text === "مجله آموزشی" ? (
                     <div>
                       <button
                         className="flex items-center justify-between w-full text-right"
                         onClick={toggleBlogCategories}
                       >
-                        <span className="font-medium">{item}</span>
+                        <span className="font-medium">{item.text}</span>
                         <ChevronLeft
                           className={`w-5 h-5 transition-transform duration-300 ${
                             expandedBlogCategory ? "transform rotate-90" : ""
@@ -469,16 +480,16 @@ const Navbar: React.FC = () => {
                       </AnimatePresence>
                     </div>
                   ) : (
-                    <a
-                      href="#"
+                    <Link
+                      href={item.href}
                       className="block font-medium hover:text-pink-500"
                     >
-                      {item}
-                    </a>
+                      {item.text}
+                    </Link>
                   )}
                 </li>
-
-              ))}            </ul>
+              ))}
+            </ul>
 
             <div className="mt-8 pt-6 border-t border-gray-200">
               <button className="w-full bg-pink-500 text-white py-2 rounded-md hover:bg-pink-600 transition-colors">
