@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { motion, useAnimation } from "framer-motion";
+import { motion, useAnimation, useDragControls } from "framer-motion";
 import {
   FaInstagram,
   FaTelegram,
@@ -157,7 +157,10 @@ const TeamMembers: React.FC = () => {
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
   const [isAutoplayPaused, setIsAutoplayPaused] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStartX, setDragStartX] = useState(0);
   const controls = useAnimation();
+  const dragControls = useDragControls();
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Calculate max index based on visible items
@@ -184,7 +187,7 @@ const TeamMembers: React.FC = () => {
   useEffect(() => {
     let interval: NodeJS.Timeout;
 
-    if (!isAutoplayPaused) {
+    if (!isAutoplayPaused && !isDragging) {
       interval = setInterval(() => {
         if (currentIndex < maxIndex) {
           handleNext();
@@ -197,7 +200,7 @@ const TeamMembers: React.FC = () => {
     }
 
     return () => clearInterval(interval);
-  }, [currentIndex, maxIndex, isAutoplayPaused, controls]);
+  }, [currentIndex, maxIndex, isAutoplayPaused, isDragging, controls]);
 
   // Update animation when currentIndex changes
   useEffect(() => {
@@ -280,6 +283,64 @@ const TeamMembers: React.FC = () => {
     }
   };
 
+  // Handle mouse drag for desktop
+  const handleDragStart = (e: React.MouseEvent) => {
+    setIsDragging(true);
+    setIsAutoplayPaused(true);
+    setDragStartX(e.clientX);
+    document.addEventListener('mousemove', handleDragMove);
+    document.addEventListener('mouseup', handleDragEnd);
+  };
+
+  const handleDragMove = (e: MouseEvent) => {
+    if (!isDragging || !containerRef.current) return;
+    
+    const distance = dragStartX - e.clientX;
+    const slideWidth = containerRef.current.offsetWidth / visibleItems;
+    
+    // Apply resistance at edges
+    let newX = -currentIndex * slideWidth - distance;
+
+    if (currentIndex === 0 && distance < 0) {
+      // Left edge - add resistance
+      newX = -distance * 0.3;
+    } else if (currentIndex === maxIndex && distance > 0) {
+      // Right edge - add resistance
+      newX = -currentIndex * slideWidth - distance * 0.3;
+    }
+
+    // Update position during drag
+    controls.set({ x: newX });
+  };
+
+  const handleDragEnd = (e: MouseEvent) => {
+    setIsDragging(false);
+    setIsAutoplayPaused(false);
+    
+    document.removeEventListener('mousemove', handleDragMove);
+    document.removeEventListener('mouseup', handleDragEnd);
+
+    if (!containerRef.current) return;
+    
+    const slideWidth = containerRef.current.offsetWidth / visibleItems;
+    const distance = dragStartX - e.clientX;
+    const minSwipeDistance = 50;
+
+    if (distance > minSwipeDistance && currentIndex < maxIndex) {
+      // Drag left - go to next slide
+      handleNext();
+    } else if (distance < -minSwipeDistance && currentIndex > 0) {
+      // Drag right - go to previous slide
+      handlePrev();
+    } else {
+      // Return to current slide
+      controls.start({
+        x: -currentIndex * slideWidth,
+        transition: { type: "spring", stiffness: 300, damping: 30 },
+      });
+    }
+  };
+
   // Handle dot navigation
   const handleDotClick = (index: number) => {
     setCurrentIndex(index);
@@ -329,117 +390,48 @@ const TeamMembers: React.FC = () => {
           />
         </motion.div>
 
-        {/* Slider controls */}
-        <div className="flex justify-between items-center mb-8 px-4">
-          <motion.button
-            onClick={handlePrev}
-            className={`bg-white border border-gray-200 text-pink-600 cursor-pointer rounded-full w-12 h-12 flex items-center justify-center transition-all duration-300 ${
-              currentIndex <= 0
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:bg-pink-50 shadow-md"
-            }`}
-            whileHover={
-              currentIndex > 0
-                ? {
-                    scale: 1.1,
-                    boxShadow: "0 10px 25px -5px rgba(236, 72, 153, 0.3)",
-                  }
-                : {}
-            }
-            whileTap={currentIndex > 0 ? { scale: 0.95 } : {}}
-            disabled={currentIndex <= 0}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="m15 18-6-6 6-6" />
-            </svg>
-          </motion.button>
-
-          <div className="flex gap-2">
-            {Array.from({ length: maxIndex + 1 }).map((_, index) => (
-              <motion.button
-                key={index}
-                onClick={() => handleDotClick(index)}
-                className="w-3 h-3 rounded-full"
-                whileHover={{ scale: 1.3 }}
-                whileTap={{ scale: 0.9 }}
-                animate={{
-                  scale: index === currentIndex ? 1.2 : 1,
-                  backgroundColor:
-                    index === currentIndex
-                      ? "rgb(219, 39, 119)"
-                      : "rgb(249, 168, 212)",
-                  boxShadow:
-                    index === currentIndex
-                      ? "0 0 12px rgba(219, 39, 119, 0.5)"
-                      : "none",
-                }}
-                transition={{ duration: 0.3 }}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
-          </div>
-
-          <motion.button
-            onClick={handleNext}
-            className={`bg-white border border-gray-200 text-pink-600 cursor-pointer rounded-full w-12 h-12 flex items-center justify-center transition-all duration-300 ${
-              currentIndex >= maxIndex
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:bg-pink-50 shadow-md"
-            }`}
-            whileHover={
-              currentIndex < maxIndex
-                ? {
-                    scale: 1.1,
-                    boxShadow: "0 10px 25px -5px rgba(236, 72, 153, 0.3)",
-                  }
-                : {}
-            }
-            whileTap={currentIndex < maxIndex ? { scale: 0.95 } : {}}
-            disabled={currentIndex >= maxIndex}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="m9 18 6-6-6-6" />
-            </svg>
-          </motion.button>
-        </div>
-
-        {/* Slider container with touch support */}
+                       {/* Slider container with touch and drag support */}
         <div className="relative overflow-hidden">
-       
-
           <motion.div
             ref={containerRef}
-            className="overflow-hidden"
+            className="overflow-hidden cursor-grab"
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
+            onMouseDown={handleDragStart}
             onMouseEnter={() => setIsAutoplayPaused(true)}
-            onMouseLeave={() => setIsAutoplayPaused(false)}
+            onMouseLeave={() => {
+              if (!isDragging) setIsAutoplayPaused(false);
+            }}
+            style={{ touchAction: "pan-y" }}
           >
             <motion.div
               className="flex gap-8"
               animate={controls}
               initial={{ x: 0 }}
+              drag="x"
+              dragConstraints={{ left: -maxIndex * (containerRef.current?.offsetWidth || 0) / visibleItems, right: 0 }}
+              dragElastic={0.1}
+              dragControls={dragControls}
+              onDragStart={() => {
+                setIsDragging(true);
+                setIsAutoplayPaused(true);
+              }}
+              onDragEnd={(e, info) => {
+                setIsDragging(false);
+                setIsAutoplayPaused(false);
+                
+                if (containerRef.current) {
+                  const slideWidth = containerRef.current.offsetWidth / visibleItems;
+                  const dragDistance = info.offset.x;
+                  const draggedSlides = Math.round(dragDistance / slideWidth);
+                  
+                  let newIndex = currentIndex - draggedSlides;
+                  newIndex = Math.max(0, Math.min(newIndex, maxIndex));
+                  
+                  setCurrentIndex(newIndex);
+                }
+              }}
             >
               {teamMembers.map((member, index) => (
                 <motion.div
@@ -625,8 +617,6 @@ const TeamMembers: React.FC = () => {
             </motion.div>
           </motion.div>
         </div>
-
-   
       </div>
     </section>
   );

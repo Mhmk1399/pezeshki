@@ -160,7 +160,7 @@ const MegaMenu: React.FC<MegaMenuProps> = ({ isOpen }) => {
                             ? "bg-pink-100 text-pink-600 font-bold"
                             : "hover:bg-gray-100"
                         }`}
-                        onClick={() => setActiveCategory(category.id)}
+                        onMouseEnter={() => setActiveCategory(category.id)}
                       >
                         <span>{category.name}</span>
                         <ChevronLeft

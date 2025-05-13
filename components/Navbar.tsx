@@ -8,7 +8,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import MegaMenu from "./megaMenu";
 import Dropdown from "./dropdown";
@@ -84,16 +84,16 @@ const categories: Category[] = [
       { id: 501, name: "سرنگ", slug: "syringe" },
       { id: 502, name: "دستکش", slug: "gloves" },
       { id: 503, name: "ماسک", slug: "mask" },
-      { id: 504, name: "گاز استریل", slug: "sterile-gauze" },
     ],
   },
 ];
+// Blog categories for dropdown
 const blogCategories = [
-  { id: 1, title: "آموزش پزشکی", slug: "medical-education" },
-  { id: 2, title: "سلامت و تندرستی", slug: "health-wellness" },
-  { id: 3, title: "تغذیه و رژیم غذایی", slug: "nutrition-diet" },
-  { id: 4, title: "روانشناسی و سلامت روان", slug: "psychology-mental-health" },
-  { id: 5, title: "اخبار پزشکی", slug: "medical-news" },
+  { id: 1, name: "سلامت و زیبایی", slug: "health-beauty" },
+  { id: 2, name: "تغذیه", slug: "nutrition" },
+  { id: 3, name: "مراقبت پوست", slug: "skin-care" },
+  { id: 4, name: "مراقبت مو", slug: "hair-care" },
+  { id: 5, name: "آرایش", slug: "makeup" },
 ];
 
 const Navbar: React.FC = () => {
@@ -101,10 +101,16 @@ const Navbar: React.FC = () => {
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [expandedBlogCategory, setExpandedBlogCategory] = useState(false);
-
   const [expandedCategory, setExpandedCategory] = useState<number | null>(null);
-  const megaMenuTriggerRef = useRef<HTMLLIElement>(null);
-  const dropdownTriggerRef = useRef<HTMLLIElement>(null);
+  
+  // Add timeout refs to handle menu open/close delays
+  const megaMenuTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  
+  const megaMenuTriggerRef = useRef<HTMLLIElement | null>(null);
+  const dropdownTriggerRef = useRef<HTMLLIElement | null>(null);
+  const megaMenuRef = useRef<HTMLDivElement | null>(null);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const menuItems = [
     "صفحه اصلـی",
@@ -114,27 +120,135 @@ const Navbar: React.FC = () => {
     "تماس با ما",
   ];
 
-  const handleMouseEnter = (item: string) => {
-    if (item === "خدمات ویژه") {
+  // Clear timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (megaMenuTimeoutRef.current) clearTimeout(megaMenuTimeoutRef.current);
+      if (dropdownTimeoutRef.current) clearTimeout(dropdownTimeoutRef.current);
+    };
+  }, []);
+
+  // Handle clicks outside the mega menu and dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      // Close mega menu if clicked outside
+      if (
+        isMegaMenuOpen &&
+        megaMenuRef.current &&
+        !megaMenuRef.current.contains(event.target as Node) &&
+        megaMenuTriggerRef.current &&
+        !megaMenuTriggerRef.current.contains(event.target as Node)
+      ) {
+        setIsMegaMenuOpen(false);
+      }
+
+      // Close dropdown if clicked outside
+      if (
+        isDropdownOpen &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node) &&
+        dropdownTriggerRef.current &&
+        !dropdownTriggerRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMegaMenuOpen, isDropdownOpen]);
+
+  // Handlers for mega menu
+  const handleMegaMenuEnter = () => {
+    if (dropdownTimeoutRef.current) {
+      clearTimeout(dropdownTimeoutRef.current);
+      dropdownTimeoutRef.current = null;
+    }
+    
+    if (megaMenuTimeoutRef.current) {
+      clearTimeout(megaMenuTimeoutRef.current);
+    }
+    
+    megaMenuTimeoutRef.current = setTimeout(() => {
       setIsMegaMenuOpen(true);
       setIsDropdownOpen(false);
-    } else if (item === "مجله آموزشی") {
+    }, 100);
+  };
+
+  const handleMegaMenuLeave = () => {
+    if (megaMenuTimeoutRef.current) {
+      clearTimeout(megaMenuTimeoutRef.current);
+    }
+    
+    megaMenuTimeoutRef.current = setTimeout(() => {
+      if (megaMenuRef.current && !megaMenuRef.current.matches(':hover') && 
+      megaMenuTriggerRef.current && !megaMenuTriggerRef.current.matches(':hover')) {
+    setIsMegaMenuOpen(false);
+      }
+    }, 300);
+  };
+
+  // Handlers for dropdown menu
+  const handleDropdownEnter = () => {
+    if (megaMenuTimeoutRef.current) {
+      clearTimeout(megaMenuTimeoutRef.current);
+      megaMenuTimeoutRef.current = null;
+    }
+    
+    if (dropdownTimeoutRef.current) {
+      clearTimeout(dropdownTimeoutRef.current);
+    }
+    
+    dropdownTimeoutRef.current = setTimeout(() => {
       setIsDropdownOpen(true);
       setIsMegaMenuOpen(false);
+    }, 100);
+  };
+
+  const handleDropdownLeave = () => {
+    if (dropdownTimeoutRef.current) {
+      clearTimeout(dropdownTimeoutRef.current);
+    }
+    
+    dropdownTimeoutRef.current = setTimeout(() => {
+      if (!dropdownRef.current?.matches(':hover') && 
+          !dropdownTriggerRef.current?.matches(':hover')) {
+        setIsDropdownOpen(false);
+      }
+    }, 300);
+  };
+
+  // Handle mouse enter for menu items
+  const handleMouseEnter = (item: string) => {
+    if (item === "خدمات ویژه") {
+      handleMegaMenuEnter();
+    } else if (item === "مجله آموزشی") {
+      handleDropdownEnter();
     } else {
-      setIsMegaMenuOpen(false);
-      setIsDropdownOpen(false);
+      // For other menu items, close both menus with a delay
+      if (megaMenuTimeoutRef.current) clearTimeout(megaMenuTimeoutRef.current);
+      if (dropdownTimeoutRef.current) clearTimeout(dropdownTimeoutRef.current);
+      
+      megaMenuTimeoutRef.current = setTimeout(() => {
+        setIsMegaMenuOpen(false);
+      }, 300);
+      
+      dropdownTimeoutRef.current = setTimeout(() => {
+        setIsDropdownOpen(false);
+      }, 300);
     }
   };
-
-  const handleMouseLeave = () => {
-    setIsMegaMenuOpen(false);
-    setIsDropdownOpen(false);
-  };
-
+  
   const toggleCategory = (categoryId: number) => {
-    setExpandedCategory(expandedCategory === categoryId ? null : categoryId);
+    setExpandedCategory(categoryId);
   };
+
+  const handleCategoryMouseLeave = () => {
+    setExpandedCategory(null);
+  };
+  
   const toggleBlogCategories = () => {
     setExpandedBlogCategory(!expandedBlogCategory);
   };
@@ -161,7 +275,13 @@ const Navbar: React.FC = () => {
               }
               className="cursor-pointer hover:text-pink-500 relative"
               onMouseEnter={() => handleMouseEnter(item)}
-              onMouseLeave={handleMouseLeave}
+              onMouseLeave={
+                item === "خدمات ویژه"
+                  ? handleMegaMenuLeave
+                  : item === "مجله آموزشی"
+                  ? handleDropdownLeave
+                  : undefined
+              }
             >
               <div className="flex items-center gap-1">
                 {item}
@@ -177,19 +297,25 @@ const Navbar: React.FC = () => {
                 )}
               </div>
 
-              {item === "مجله آموزشی" && (
+              {item === "مجله آموزشی" && isDropdownOpen && (
                 <div
                   className="absolute top-full right-0"
-                  onMouseEnter={() => setIsDropdownOpen(true)}
-                  onMouseLeave={() => setIsDropdownOpen(false)}
+                  ref={dropdownRef}
+                  onMouseEnter={handleDropdownEnter}
+                  onMouseLeave={handleDropdownLeave}
                   dir="rtl"
                 >
-                  <Dropdown isOpen={isDropdownOpen} items={blogCategories} />
+                  <Dropdown 
+                    isOpen={isDropdownOpen} 
+                    items={blogCategories.map(category => ({
+                      ...category,
+                      title: category.name
+                    }))} 
+                  />
                 </div>
               )}
             </li>
-          ))}
-        </ul>
+          ))}        </ul>
 
         <div className="hidden md:flex gap-4 items-center">
           <span className="text-gray-700 font-medium">۰۹۱۲۳۴۵۶۷۸۹</span>
@@ -221,106 +347,102 @@ const Navbar: React.FC = () => {
           } md:hidden`}
           style={{ zIndex: 40 }}
         >
-          <div className="pt-20 px-4 pb-20">
-            <ul className="flex flex-col gap-2">
-              {menuItems.map((item, index) => {
-                if (item === "خدمات ویژه") {
-                  return (
-                    <div key={index} className="mb-2">
-                      <div className="px-4 py-3 cursor-pointer hover:bg-pink-50 rounded-lg transition-colors flex justify-between items-center bg-pink-100">
-                        <span className="font-bold text-pink-600">{item}</span>
-                        <ChevronDown className="w-5 h-5 text-pink-600" />
-                      </div>
+          <div className="p-6">
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-xl font-bold">منو</h2>
+              <button onClick={() => setIsMenuOpen(false)}>
+                <X className="w-6 h-6 text-gray-500" />
+              </button>
+            </div>
 
-                      {/* Categories in Mobile Menu */}
-                      <div className="mt-2 border-r-2 border-pink-200 pr-2 mr-2">
-                        {categories.map((category) => (
-                          <div key={category.id} className="mb-2">
-                            <button
-                              onClick={() => toggleCategory(category.id)}
-                              className="w-full px-4 py-2 flex justify-between items-center rounded-lg hover:bg-gray-50 transition-colors"
-                            >
-                              <span className="font-medium">
-                                {category.name}
-                              </span>
-                              <motion.div
-                                animate={{
-                                  rotate:
-                                    expandedCategory === category.id ? 90 : 0,
-                                }}
-                                transition={{ duration: 0.2 }}
-                              >
-                                <ChevronLeft className="w-5 h-5 text-gray-500" />
-                              </motion.div>
-                            </button>
-
-                            <AnimatePresence>
-                              {expandedCategory === category.id && (
-                                <motion.div
-                                  initial={{ height: 0, opacity: 0 }}
-                                  animate={{ height: "auto", opacity: 1 }}
-                                  exit={{ height: 0, opacity: 0 }}
-                                  transition={{ duration: 0.3 }}
-                                  className="overflow-hidden"
-                                >
-                                  <ul className="pr-4 mr-2 mt-1 border-r-2 border-gray-200">
-                                    {category.subCategories.map(
-                                      (subCategory) => (
-                                        <motion.li
-                                          key={subCategory.id}
-                                          initial={{ x: -10, opacity: 0 }}
-                                          animate={{ x: 0, opacity: 1 }}
-                                          transition={{ duration: 0.2 }}
-                                          className="py-2 px-3 hover:bg-gray-50 rounded-lg transition-colors"
-                                        >
-                                          <a
-                                            href={`/category/${category.slug}/${subCategory.slug}`}
-                                            className="block"
-                                          >
-                                            <div className="flex items-center">
-                                              <ChevronRight className="w-4 h-4 ml-2 text-gray-400" />
-                                              <span>{subCategory.name}</span>
-                                            </div>
-                                          </a>
-                                        </motion.li>
-                                      )
-                                    )}
-                                    <motion.li
-                                      initial={{ x: -10, opacity: 0 }}
-                                      animate={{ x: 0, opacity: 1 }}
-                                      transition={{ duration: 0.2, delay: 0.2 }}
-                                    >
-                                      <a
-                                        href={`/category/${category.slug}`}
-                                        className="block py-2 px-3 text-pink-600 font-medium mt-1"
-                                      >
-                                        مشاهده همه {category.name}
-                                      </a>
-                                    </motion.li>
-                                  </ul>
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                } else if (item === "مجله آموزشی") {
-                  // Blog menu item with dropdown
-                  return (
-                    <div key={index} className="mb-2">
+            <ul className="space-y-4">
+              {menuItems.map((item, index) => (
+                <li key={index} className="py-2">
+                  {item === "خدمات ویژه" ? (
+                    <div>
                       <button
-                        onClick={toggleBlogCategories}
-                        className="w-full px-4 py-3 cursor-pointer hover:bg-pink-50 rounded-lg transition-colors flex justify-between items-center"
+                        className="flex items-center justify-between w-full text-right"
+                        onClick={() => toggleCategory(0)}
                       >
                         <span className="font-medium">{item}</span>
-                        <motion.div
-                          animate={{ rotate: expandedBlogCategory ? 180 : 0 }}
-                          transition={{ duration: 0.2 }}
-                        >
-                          <ChevronDown className="w-5 h-5 text-gray-500" />
-                        </motion.div>
+                        <ChevronLeft
+                          className={`w-5 h-5 transition-transform duration-300 ${
+                            expandedCategory === 0 ? "transform rotate-90" : ""
+                          }`}
+                        />
+                      </button>
+
+                      <AnimatePresence>
+                        {expandedCategory === 0 && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="overflow-hidden"
+                          >
+                            <ul className="mt-2 space-y-2 pr-4 border-r border-gray-200">
+                              {categories.map((category) => (
+                                <li key={category.id}>
+                                  <div
+                                    className="flex items-center justify-between w-full text-right"
+                                    onMouseEnter={() => toggleCategory(category.id)}
+                                    onMouseLeave={handleCategoryMouseLeave}
+                                  >
+                                    <span>{category.name}</span>
+                                    <ChevronLeft
+                                      className={`w-4 h-4 transition-transform duration-300 ${
+                                        expandedCategory === category.id
+                                          ? "transform rotate-90"
+                                          : ""
+                                      }`}
+                                    />
+                                  </div>
+
+                                  <AnimatePresence>
+                                    {expandedCategory === category.id && (
+                                      <motion.ul
+                                        initial={{ height: 0, opacity: 0 }}
+                                        animate={{
+                                          height: "auto",
+                                          opacity: 1,
+                                        }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        transition={{ duration: 0.3 }}
+                                        className="mt-1 space-y-1 pr-4 border-r border-gray-100"
+                                      >
+                                        {category.subCategories.map(
+                                          (subCategory) => (
+                                            <li
+                                              key={subCategory.id}
+                                              className="text-sm text-gray-600 hover:text-pink-500"
+                                            >
+                                              {subCategory.name}
+                                            </li>
+                                          )
+                                        )}
+                                      </motion.ul>
+                                    )}
+                                  </AnimatePresence>
+                                </li>
+                              ))}
+                            </ul>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  ) : item === "مجله آموزشی" ? (
+                    <div>
+                      <button
+                        className="flex items-center justify-between w-full text-right"
+                        onClick={toggleBlogCategories}
+                      >
+                        <span className="font-medium">{item}</span>
+                        <ChevronLeft
+                          className={`w-5 h-5 transition-transform duration-300 ${
+                            expandedBlogCategory ? "transform rotate-90" : ""
+                          }`}
+                        />
                       </button>
 
                       <AnimatePresence>
@@ -332,64 +454,39 @@ const Navbar: React.FC = () => {
                             transition={{ duration: 0.3 }}
                             className="overflow-hidden"
                           >
-                            <ul className="pr-4 mr-2 mt-1 border-r-2 border-pink-200">
+                            <ul className="mt-2 space-y-2 pr-4 border-r border-gray-200">
                               {blogCategories.map((category) => (
-                                <motion.li
+                                <li
                                   key={category.id}
-                                  initial={{ x: -10, opacity: 0 }}
-                                  animate={{ x: 0, opacity: 1 }}
-                                  transition={{ duration: 0.2 }}
-                                  className="py-2 px-3 hover:bg-gray-50 rounded-lg transition-colors"
+                                  className="text-sm text-gray-600 hover:text-pink-500"
                                 >
-                                  <a
-                                    href={`/blog/${category.slug}`}
-                                    className="block"
-                                  >
-                                    <div className="flex items-center">
-                                      <ChevronRight className="w-4 h-4 ml-2 text-gray-400" />
-                                      <span>{category.title}</span>
-                                    </div>
-                                  </a>
-                                </motion.li>
+                                  {category.name}
+                                </li>
                               ))}
-                              <motion.li
-                                initial={{ x: -10, opacity: 0 }}
-                                animate={{ x: 0, opacity: 1 }}
-                                transition={{ duration: 0.2, delay: 0.2 }}
-                              >
-                                <a
-                                  href="/blog"
-                                  className="block py-2 px-3 text-pink-600 font-medium mt-1"
-                                >
-                                  مشاهده همه مقالات
-                                </a>
-                              </motion.li>
                             </ul>
                           </motion.div>
                         )}
                       </AnimatePresence>
                     </div>
-                  );
-                }
+                  ) : (
+                    <a
+                      href="#"
+                      className="block font-medium hover:text-pink-500"
+                    >
+                      {item}
+                    </a>
+                  )}
+                </li>
 
-                return (
-                  <li
-                    key={index}
-                    className="px-4 py-3 cursor-pointer hover:bg-pink-50 rounded-lg transition-colors"
-                  >
-                    {item}
-                  </li>
-                );
-              })}
-            </ul>
+              ))}            </ul>
 
-            <div className="mt-8 flex flex-col gap-4">
-              <button className="bg-pink-300 rounded-full px-4 py-2 cursor-pointer hover:bg-pink-400 transition-colors">
+            <div className="mt-8 pt-6 border-t border-gray-200">
+              <button className="w-full bg-pink-500 text-white py-2 rounded-md hover:bg-pink-600 transition-colors">
                 عضویت
               </button>
-              <div className="flex justify-center items-center gap-2">
-                <span className="text-gray-700 font-medium">۰۹۱۲۳۴۵۶۷۸۹</span>
-                <Phone className="w-12 h-10 bg-pink-300 rounded-full p-2 text-black cursor-pointer" />
+              <div className="flex items-center justify-center mt-4 gap-2">
+                <Phone className="w-5 h-5 text-gray-600" />
+                <span className="text-gray-700">۰۹۱۲۳۴۵۶۷۸۹</span>
               </div>
             </div>
           </div>
@@ -408,9 +505,10 @@ const Navbar: React.FC = () => {
       {/* Full-width Mega Menu positioned outside the nav container */}
       {isMegaMenuOpen && (
         <div
+          ref={megaMenuRef}
           className="absolute top-full left-0 right-0 w-full z-40"
-          onMouseEnter={() => setIsMegaMenuOpen(true)}
-          onMouseLeave={() => setIsMegaMenuOpen(false)}
+          onMouseEnter={handleMegaMenuEnter}
+          onMouseLeave={handleMegaMenuLeave}
         >
           <MegaMenu isOpen={isMegaMenuOpen} />
         </div>
