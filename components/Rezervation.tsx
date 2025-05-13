@@ -1,14 +1,14 @@
-'use client'
+"use client";
 
-import React from 'react';
-import { motion } from 'framer-motion';
+import React from "react";
+import { motion } from "framer-motion";
 
 export default function Rezervation() {
   return (
     <section className="bg-gradient-to-b from-gray-200 to-gray-100 p-4 md:p-8 lg:p-12">
       <div className="max-w-6xl mx-auto">
         {/* Banner */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -19,9 +19,9 @@ export default function Rezervation() {
             تخفیف ویژه بگیرید
           </div>
         </motion.div>
-        
+
         {/* Content Box */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
@@ -32,20 +32,23 @@ export default function Rezervation() {
           <h1 className="mb-4 md:mb-6 lg:mb-10 text-xl md:text-2xl lg:text-3xl text-[#BC0060] font-bold">
             !خدمات زیبایی شروع شد
           </h1>
-          
-          <p className="max-w-4xl text-center text-base md:text-lg text-gray-600 leading-relaxed" dir="rtl">
+
+          <p
+            className="max-w-4xl text-center text-base md:text-lg text-gray-600 leading-relaxed"
+            dir="rtl"
+          >
             در جشنواره بهاری سالن ما، با رزرو آنلاین خدماتی چون میکاپ، کاشت
             ناخن، کراتینه و پاکسازی پوست، تخفیف‌های شگفت‌انگیزی دریافت کنید. این
             پیشنهاد محدود، با هدف ارتقای تجربه شما از خدمات زیبایی ارائه می‌شود.
             همین حالا نوبت رزرو کنید و از فضایی آرام و حرفه‌ای با استفاده از
             متریال اصل و تکنیک‌های روز بهره‌مند شوید.
           </p>
-          
-          <motion.button 
+
+          <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="mt-6 md:mt-8 py-2 md:py-3 px-6 md:px-8 bg-pink-400 hover:bg-pink-500 
-                      rounded-full md:rounded-3xl text-white font-medium text-base md:text-lg
+            className="mt-6 md:mt-8 py-2 md:py-3 px-6 md:px-8 border-2 border-pink-600 hover:text-white hover:bg-pink-700 
+                      rounded-full md:rounded-3xl text-pink-600 font-medium text-base md:text-lg
                       transition-colors duration-300 shadow-md"
           >
             نوبت بگیرید

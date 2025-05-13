@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
 import { motion, PanInfo, useAnimation } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 type Service = {
   id: number;
@@ -159,7 +160,7 @@ const ServiceSlider: React.FC = () => {
     <div className="max-w-7xl mx-auto text-center mt-20 mb-10 px-4">
       <div className="flex items-center justify-between mb-8" dir="rtl">
         <h2 className="text-3xl text-pink-600 font-bold">خدمات</h2>
-        <div className="flex items-center">
+        <div className="flex justify-center items-center">
           <motion.button
             onClick={handleNext}
             className={`bg-gray-100 text-3xl rounded-2xl w-10 h-10 mx-2 shadow-sm flex items-center justify-center ${
@@ -171,7 +172,7 @@ const ServiceSlider: React.FC = () => {
             whileTap={{ scale: currentIndex >= maxIndex ? 1 : 0.9 }}
             disabled={currentIndex >= maxIndex}
           >
-            ‹
+            <ChevronRight size={24} />
           </motion.button>
           <motion.button
             onClick={handlePrev}
@@ -184,7 +185,7 @@ const ServiceSlider: React.FC = () => {
             whileTap={{ scale: currentIndex <= 0 ? 1 : 0.9 }}
             disabled={currentIndex <= 0}
           >
-            ›
+            <ChevronLeft size={24} />
           </motion.button>
         </div>
       </div>
