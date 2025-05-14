@@ -40,7 +40,7 @@ export default function Home() {
       <PriceList />
       <News />
       <Store />
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }

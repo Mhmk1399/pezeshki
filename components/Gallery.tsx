@@ -206,42 +206,44 @@ export default function Gallery() {
 
         {/* Filter buttons */}
         <motion.div
-          className="flex flex-wrap justify-center items-center gap-4 mb-10"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          {categories.map((category) => (
-            <motion.button
-              key={category.id}
-              onClick={() => handleFilterChange(category.id)}
-              className={`
-        rounded-full py-2.5 px-5 font-medium cursor-pointer 
-        flex items-center gap-2 transition-all duration-300
+  className="flex justify-center items-center gap-1 sm:gap-4 mb-10 w-full"
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.5, delay: 0.2 }}
+>
+  {categories.map((category) => (
+    <motion.button
+      key={category.id}
+      onClick={() => handleFilterChange(category.id)}
+      className={`
+        rounded-full py-1 px-2 sm:py-2.5 sm:px-4 text-xs sm:text-base font-medium cursor-pointer 
+        flex items-center gap-1 sm:gap-2 transition-all duration-300
         ${
           activeFilter === category.id
             ? "bg-pink-500 text-white shadow-lg shadow-pink-200"
             : "bg-white text-gray-700 border border-pink-100 shadow-sm hover:bg-pink-50"
         }
       `}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <motion.span
-                className={`${
-                  activeFilter === category.id ? "text-white" : "text-pink-500"
-                }`}
-                animate={{
-                  rotate: activeFilter === category.id ? [0, 15, 0, -15, 0] : 0,
-                }}
-                transition={{ duration: 0.5, ease: "easeInOut" }}
-              >
-                {category.icon}
-              </motion.span>
-              {category.label}
-            </motion.button>
-          ))}
-        </motion.div>
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+    >
+      <motion.span
+        className={`${
+          activeFilter === category.id ? "text-white" : "text-pink-500"
+        } text-sm sm:text-base`}
+        animate={{
+          rotate: activeFilter === category.id ? [0, 15, 0, -15, 0] : 0,
+        }}
+        transition={{ duration: 0.5, ease: "easeInOut" }}
+      >
+        {category.icon}
+      </motion.span>
+      {category.label}
+    </motion.button>
+  ))}
+</motion.div>
+
+
 
         {/* Gallery grid */}
         <div ref={galleryRef}>

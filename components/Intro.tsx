@@ -52,19 +52,19 @@ const Intro: React.FC = () => {
   };
 
   return (
-    <section className="max-w-6xl mx-auto px-4 py-20 relative z-1 -mt-30">
+    <section className="w-full max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-20 relative z-1">
       <motion.div
-        className="flex flex-col md:flex-row items-center justify-center gap-12 p-8 bg-white rounded-3xl shadow-lg relative"
+        className="flex flex-col md:flex-row items-center justify-center gap-6 sm:gap-8 md:gap-12 p-4 sm:p-6 md:p-8 bg-white rounded-xl sm:rounded-2xl md:rounded-3xl shadow-md sm:shadow-lg relative"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
       >
         {/* Image with play button - positioned relative for the circle to be positioned relative to it */}
-        <div className="relative">
-          {/* Circle positioned outside to the right of the video container */}
+        <div className="relative w-full md:w-auto mb-8 md:mb-0">
+          {/* Circle positioned outside to the right of the video container - hidden on mobile */}
           <motion.div
-            className="absolute top-1/2 -right-16 w-45 h-50 bg-pink-100 rounded-full -translate-y-1/2 z-0"
+            className="absolute top-1/2 -right-8 sm:-right-12 md:-right-16 w-24 sm:w-32 md:w-45 h-28 sm:h-40 md:h-50 bg-pink-100 rounded-full -translate-y-1/2 z-0 hidden sm:block"
             style={{ clipPath: "inset(0 0 0 50%)" }}
             variants={circleVariants}
             initial="hidden"
@@ -72,7 +72,7 @@ const Intro: React.FC = () => {
           />
 
           <motion.div
-            className="relative w-[300px] h-[350px] rounded-2xl overflow-hidden shadow-md cursor-pointer hover:scale-105 transition-transform duration-300"
+            className="relative w-full sm:w-[280px] md:w-[300px] h-[250px] sm:h-[320px] md:h-[350px] rounded-lg sm:rounded-xl md:rounded-2xl overflow-hidden shadow-md cursor-pointer hover:scale-105 transition-transform duration-300 mx-auto md:mx-0"
             variants={itemVariants}
             whileHover={{
               boxShadow:
@@ -83,9 +83,9 @@ const Intro: React.FC = () => {
               src="/image1.jpg"
               alt="Video Thumbnail"
               fill
-              sizes="(max-width: 300px) 100vw, 300px"
+              sizes="(max-width: 640px) 100vw, (max-width: 768px) 280px, 300px"
               priority
-              className="object-cover rounded-2xl bg-pink-300"
+              className="object-cover rounded-lg sm:rounded-xl md:rounded-2xl bg-pink-300"
             />
             <motion.button
               type="button"
@@ -96,12 +96,12 @@ const Intro: React.FC = () => {
               whileTap={{ scale: 0.9 }}
             >
               <motion.div
-                className="bg-opacity-80 rounded-full flex items-center justify-center text-white"
+                className="bg-white bg-opacity-80 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center text-white shadow-lg"
                 animate={isPlaying ? { scale: [1, 1.2, 1] } : {}}
                 transition={{ duration: 0.3 }}
               >
                 <svg
-                  className="w-6 h-6 text-pink-500"
+                  className="w-5 h-5 sm:w-6 sm:h-6 text-pink-500 ml-1"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                   xmlns="http://www.w3.org/2000/svg"
@@ -114,11 +114,11 @@ const Intro: React.FC = () => {
         </div>
 
         <motion.div
-          className="max-w-md text-center md:text-right"
+          className="max-w-md text-center md:text-right px-4"
           variants={itemVariants}
         >
           <motion.h2
-            className="text-5xl font-black text-pink-700 mb-4"
+            className="text-3xl sm:text-4xl md:text-5xl font-black text-pink-700 mb-3 sm:mb-4"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5, duration: 0.5 }}
@@ -126,7 +126,7 @@ const Intro: React.FC = () => {
             ویدئو معرفی
           </motion.h2>
           <motion.p
-            className="text-gray-700 leading-relaxed"
+            className="text-gray-700 text-sm sm:text-base md:text-lg leading-relaxed"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.7, duration: 0.5 }}
@@ -138,7 +138,7 @@ const Intro: React.FC = () => {
           </motion.p>
 
           <motion.button
-            className="mt-6 bg-pink-600 text-white py-2 px-6 rounded-full font-medium hover:bg-pink-700 transition-colors"
+            className="mt-4 sm:mt-5 md:mt-6 bg-pink-600 text-white py-2 px-4 sm:px-6 rounded-full font-medium hover:bg-pink-700 transition-colors text-sm sm:text-base"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             initial={{ opacity: 0, y: 20 }}

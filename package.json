@@ -13,11 +13,13 @@
     "@heroicons/react": "^2.2.0",
     "@popmotion/popcorn": "^0.4.4",
     "framer-motion": "^12.10.5",
+    "konva": "^9.3.20",
     "lucide-react": "^0.509.0",
     "next": "15.3.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
+    "react-konva": "^19.0.3",
     "react-multi-date-picker": "^4.5.2"
   },
   "devDependencies": {

@@ -103,12 +103,55 @@ const blogCategories = [
   { id: 5, name: "آرایش", slug: "makeup" },
 ];
 
+// Define subcategory children for mobile menu
+interface SubCategoryChild {
+  id: number;
+  name: string;
+  slug: string;
+}
+
+// Add children to subcategories
+const subCategoryChildren: Record<number, SubCategoryChild[]> = {
+  // فشارسنج children
+  101: [
+    { id: 1011, name: "فشارسنج دیجیتال", slug: "digital-blood-pressure" },
+    { id: 1012, name: "فشارسنج بازویی", slug: "arm-blood-pressure" },
+    { id: 1013, name: "فشارسنج مچی", slug: "wrist-blood-pressure" },
+  ],
+  // گلوکومتر children
+  102: [
+    { id: 1021, name: "گلوکومتر خانگی", slug: "home-glucometer" },
+    { id: 1022, name: "نوار تست قند خون", slug: "blood-sugar-test-strip" },
+  ],
+  // پالس اکسیمتر children
+  103: [
+    { id: 1031, name: "پالس اکسیمتر انگشتی", slug: "finger-pulse-oximeter" },
+    { id: 1032, name: "پالس اکسیمتر رومیزی", slug: "desktop-pulse-oximeter" },
+  ],
+  // دماسنج children
+  104: [
+    { id: 1041, name: "دماسنج دیجیتال", slug: "digital-thermometer" },
+    { id: 1042, name: "دماسنج پیشانی", slug: "forehead-thermometer" },
+    { id: 1043, name: "دماسنج گوشی", slug: "ear-thermometer" },
+  ],
+  // Add more children for other subcategories as needed
+  201: [
+    { id: 2011, name: "میکروسکوپ نوری", slug: "optical-microscope" },
+    { id: 2012, name: "میکروسکوپ دیجیتال", slug: "digital-microscope" },
+  ],
+  301: [
+    { id: 3011, name: "یونیت دندانپزشکی پایه دار", slug: "pedestal-dental-unit" },
+    { id: 3012, name: "یونیت دندانپزشکی سیار", slug: "mobile-dental-unit" },
+  ],
+};
+
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [expandedBlogCategory, setExpandedBlogCategory] = useState(false);
   const [expandedCategory, setExpandedCategory] = useState<number | null>(null);
+  const [expandedSubCategory, setExpandedSubCategory] = useState<number | null>(null);
   
   // Add timeout refs to handle menu open/close delays
   const megaMenuTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -250,7 +293,23 @@ const Navbar: React.FC = () => {
   };
   
   const toggleCategory = (categoryId: number) => {
-    setExpandedCategory(categoryId);
+    if (expandedCategory === categoryId) {
+      setExpandedCategory(null);
+      setExpandedSubCategory(null); // Also close any expanded subcategory
+    } else {
+      setExpandedCategory(categoryId);
+      setExpandedSubCategory(null); // Reset subcategory when changing category
+    }
+  };
+
+  const toggleSubCategory = (subCategoryId: number, event: React.MouseEvent) => {
+    event.stopPropagation(); // Prevent triggering parent category toggle
+    
+    if (expandedSubCategory === subCategoryId) {
+      setExpandedSubCategory(null);
+    } else {
+      setExpandedSubCategory(subCategoryId);
+    }
   };
 
   const handleCategoryMouseLeave = () => {
@@ -259,6 +318,22 @@ const Navbar: React.FC = () => {
   
   const toggleBlogCategories = () => {
     setExpandedBlogCategory(!expandedBlogCategory);
+  };
+
+  // New function to handle mobile link clicks
+  const handleMobileLinkClick = () => {
+    // Close the mobile menu when a link is clicked
+    setIsMenuOpen(false);
+    
+    // Also close any expanded categories or dropdowns
+    setExpandedCategory(null);
+    setExpandedSubCategory(null);
+    setExpandedBlogCategory(false);
+  };
+
+  // Helper function to check if a subcategory has children
+  const hasChildren = (subCategoryId: number): boolean => {
+    return !!subCategoryChildren[subCategoryId] && subCategoryChildren[subCategoryId].length > 0;
   };
 
   return (
@@ -280,252 +355,331 @@ const Navbar: React.FC = () => {
                   : item.text === "مجله آموزشی"
                   ? dropdownTriggerRef
                   : null
-              }
-              className="cursor-pointer hover:text-pink-500 relative"
-              onMouseEnter={() => handleMouseEnter(item.text)}
-              onMouseLeave={
-                item.text === "خدمات ویژه"
-                  ? handleMegaMenuLeave
-                  : item.text === "مجله آموزشی"
-                  ? handleDropdownLeave
-                  : undefined
-              }
-            >
-              <Link href={item.href}>
-                <div className="flex items-center gap-1">
-                  {item.text}
-                  {(item.text === "خدمات ویژه" || item.text === "مجله آموزشی") && (
-                    <ChevronDown
-                      className={`w-4 h-4 transition-transform duration-300 ${
-                        (item.text === "خدمات ویژه" && isMegaMenuOpen) ||
-                        (item.text === "مجله آموزشی" && isDropdownOpen)
-                          ? "transform rotate-180"
-                          : ""
-                      }`}
+                }
+                className="cursor-pointer hover:text-pink-500 relative"
+                onMouseEnter={() => handleMouseEnter(item.text)}
+                onMouseLeave={
+                  item.text === "خدمات ویژه"
+                    ? handleMegaMenuLeave
+                    : item.text === "مجله آموزشی"
+                    ? handleDropdownLeave
+                    : undefined
+                }
+              >
+                {/* Link for all menu items */}
+                <Link href={item.href}>
+                  <div className="flex items-center gap-1">
+                    {item.text}
+                    {(item.text === "خدمات ویژه" || item.text === "مجله آموزشی") && (
+                      <ChevronDown
+                        className={`w-4 h-4 transition-transform duration-300 ${
+                          (item.text === "خدمات ویژه" && isMegaMenuOpen) ||
+                          (item.text === "مجله آموزشی" && isDropdownOpen)
+                            ? "transform rotate-180"
+                            : ""
+                        }`}
+                      />
+                    )}
+                  </div>
+                </Link>
+  
+                {item.text === "مجله آموزشی" && isDropdownOpen && (
+                  <div
+                    className="absolute top-full right-0"
+                    ref={dropdownRef}
+                    onMouseEnter={handleDropdownEnter}
+                    onMouseLeave={handleDropdownLeave}
+                    dir="rtl"
+                  >
+                    <Dropdown
+                      isOpen={isDropdownOpen}
+                      items={blogCategories.map((category) => ({
+                        ...category,
+                        title: category.name,
+                        href: "/blog" // Set all blog category links to /blog
+                      }))}
                     />
-                  )}
-                </div>
-              </Link>
-
-              {item.text === "مجله آموزشی" && isDropdownOpen && (
-                <div
-                  className="absolute top-full right-0"
-                  ref={dropdownRef}
-                  onMouseEnter={handleDropdownEnter}
-                  onMouseLeave={handleDropdownLeave}
-                  dir="rtl"
-                >
-                  <Dropdown 
-                    isOpen={isDropdownOpen} 
-                    items={blogCategories.map(category => ({
-                      ...category,
-                      title: category.name
-                    }))} 
-                  />
-                </div>
-              )}
-            </li>
-          ))}
-        </ul>
-        
-        <div className="hidden md:flex gap-4 items-center">
-          <span className="text-gray-700 font-medium">۰۹۱۲۳۴۵۶۷۸۹</span>
-          <Phone className="w-5 h-5 text-black cursor-pointer" />
-          <button className="bg-pink-300 rounded-full px-4 py-2 cursor-pointer hover:bg-pink-400">
-            عضویت
-          </button>
-          <div className="flex items-center gap-2">
-            <Phone className="w-12 h-10 bg-pink-300 rounded-full p-2 text-black cursor-pointer" />
-          </div>
-        </div>
-
-        {/* Mobile Menu Button */}
-        <button
-          className="md:hidden z-50"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
-          {isMenuOpen ? (
-            <X className="w-8 h-8 text-pink-500" />
-          ) : (
-            <Menu className="w-8 h-8 text-pink-500" />
-          )}
-        </button>
-
-        {/* Mobile Sliding Menu */}
-        <div
-          className={`fixed top-0 right-0 h-full w-80 bg-white shadow-lg transform transition-transform duration-300 ease-in-out overflow-y-auto ${
-            isMenuOpen ? "translate-x-0" : "translate-x-full"
-          } md:hidden`}
-          style={{ zIndex: 40 }}
-        >
-          <div className="p-6">
-            <div className="flex justify-between items-center mb-8">
-              <h2 className="text-xl font-bold">منو</h2>
-              <button onClick={() => setIsMenuOpen(false)}>
-                <X className="w-6 h-6 text-gray-500" />
-              </button>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+          
+          <div className="hidden md:flex gap-4 items-center">
+            <span className="text-gray-700 font-medium">۰۹۱۲۳۴۵۶۷۸۹</span>
+            <Phone className="w-5 h-5 text-black cursor-pointer" />
+            <button className="bg-pink-300 rounded-full px-4 py-2 cursor-pointer hover:bg-pink-400">
+              عضویت
+            </button>
+            <div className="flex items-center gap-2">
+              <Phone className="w-12 h-10 bg-pink-300 rounded-full p-2 text-black cursor-pointer" />
             </div>
-
-            <ul className="space-y-4">
-              {menuItems.map((item, index) => (
-                <li key={index} className="py-2">
-                                   {item.text === "خدمات ویژه" ? (
-                    <div>
-                      <button
-                        className="flex items-center justify-between w-full text-right"
-                        onClick={() => toggleCategory(0)}
-                      >
-                        <span className="font-medium">{item.text}</span>
-                        <ChevronLeft
-                          className={`w-5 h-5 transition-transform duration-300 ${
-                            expandedCategory === 0 ? "transform rotate-90" : ""
-                          }`}
-                        />
-                      </button>
-
-                      <AnimatePresence>
-                        {expandedCategory === 0 && (
-                          <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: "auto", opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.3 }}
-                            className="overflow-hidden"
-                          >
-                            <ul className="mt-2 space-y-2 pr-4 border-r border-gray-200">
-                              {categories.map((category) => (
-                                <li key={category.id}>
-                                  <div
-                                    className="flex items-center justify-between w-full text-right"
-                                    onMouseEnter={() => toggleCategory(category.id)}
-                                    onMouseLeave={handleCategoryMouseLeave}
-                                  >
-                                    <span>{category.name}</span>
-                                    <ChevronLeft
-                                      className={`w-4 h-4 transition-transform duration-300 ${
-                                        expandedCategory === category.id
-                                          ? "transform rotate-90"
-                                          : ""
-                                      }`}
-                                    />
-                                  </div>
-
-                                  <AnimatePresence>
-                                    {expandedCategory === category.id && (
-                                      <motion.ul
-                                        initial={{ height: 0, opacity: 0 }}
-                                        animate={{
-                                          height: "auto",
-                                          opacity: 1,
-                                        }}
-                                        exit={{ height: 0, opacity: 0 }}
-                                        transition={{ duration: 0.3 }}
-                                        className="mt-1 space-y-1 pr-4 border-r border-gray-100"
+          </div>
+  
+          {/* Mobile Menu Button */}
+          <button
+            className="md:hidden z-50"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? (
+              <X className="w-8 h-8 text-pink-500" />
+            ) : (
+              <Menu className="w-8 h-8 text-pink-500" />
+            )}
+          </button>
+  
+          {/* Mobile Sliding Menu */}
+          <div
+            className={`fixed top-0 right-0 h-full w-80 bg-white shadow-lg transform transition-transform duration-300 ease-in-out overflow-y-auto ${
+              isMenuOpen ? "translate-x-0" : "translate-x-full"
+            } md:hidden`}
+            style={{ zIndex: 40 }}
+          >
+            <div className="p-6">
+              
+            <div className="flex justify-between items-center mb-8">
+                <h2 className="text-xl font-bold">منو</h2>
+                <button 
+                  onClick={() => setIsMenuOpen(false)}
+                  className="p-1 rounded-full hover:bg-gray-100"
+                >
+                  <X className="w-6 h-6 text-gray-500" />
+                </button>
+              </div>
+  
+              <ul className="space-y-4">
+                {menuItems.map((item, index) => (
+                  <li key={index} className="py-2">
+                    {item.text === "خدمات ویژه" ? (
+                      <div>
+                        <button
+                          className="flex items-center justify-between w-full text-right"
+                          onClick={() => toggleCategory(0)}
+                        >
+                          <span className="font-medium">{item.text}</span>
+                          <ChevronLeft
+                            className={`w-5 h-5 transition-transform duration-300 ${
+                              expandedCategory === 0 ? "transform rotate-90" : ""
+                            }`}
+                          />
+                        </button>
+  
+                        <AnimatePresence>
+                          {expandedCategory === 0 && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.3 }}
+                              className="overflow-hidden"
+                            >
+                              <ul className="mt-2 space-y-2 pr-4 border-r border-gray-200">
+                                {categories.map((category) => (
+                                  <li key={category.id}>
+                                    <div className="flex items-center justify-between w-full text-right py-1">
+                                      <Link 
+                                        href={`/category/${category.slug}`}
+                                        onClick={handleMobileLinkClick}
+                                        className="hover:text-pink-500 transition-colors"
                                       >
-                                        {category.subCategories.map(
-                                          (subCategory) => (
-                                            <li
-                                              key={subCategory.id}
-                                              className="text-sm text-gray-600 hover:text-pink-500"
-                                            >
-                                              {subCategory.name}
-                                            </li>
-                                          )
-                                        )}
-                                      </motion.ul>
-                                    )}
-                                  </AnimatePresence>
-                                </li>
-                              ))}
-                            </ul>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  ) : item.text === "مجله آموزشی" ? (
-                    <div>
-                      <button
-                        className="flex items-center justify-between w-full text-right"
-                        onClick={toggleBlogCategories}
+                                        {category.name}
+                                      </Link>
+                                      <button
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          toggleCategory(category.id);
+                                        }}
+                                        className="p-1"
+                                      >
+                                        <ChevronLeft
+                                          className={`w-4 h-4 transition-transform duration-300 ${
+                                            expandedCategory === category.id
+                                              ? "transform rotate-90"
+                                              : ""
+                                          }`}
+                                        />
+                                      </button>
+                                    </div>
+  
+                                    <AnimatePresence>
+                                      {expandedCategory === category.id && (
+                                        <motion.ul
+                                          initial={{ height: 0, opacity: 0 }}
+                                          animate={{
+                                            height: "auto",
+                                            opacity: 1,
+                                          }}
+                                          exit={{ height: 0, opacity: 0 }}
+                                          transition={{ duration: 0.3 }}
+                                          className="mt-1 space-y-1 pr-4 border-r border-gray-100"
+                                        >
+                                          {category.subCategories.map(
+                                            (subCategory) => (
+                                              <li
+                                                key={subCategory.id}
+                                                className="text-sm"
+                                              >
+                                                <div className="flex items-center justify-between py-1">
+                                                  <Link 
+                                                    href={`/category/${category.slug}/${subCategory.slug}`}
+                                                    onClick={hasChildren(subCategory.id) ? undefined : handleMobileLinkClick}
+                                                    className="text-gray-600 hover:text-pink-500"
+                                                  >
+                                                    {subCategory.name}
+                                                  </Link>
+                                                  
+                                                  {/* Only show expand button if subcategory has children */}
+                                                  {hasChildren(subCategory.id) && (
+                                                    <button
+                                                      onClick={(e) => toggleSubCategory(subCategory.id, e)}
+                                                      className="p-1"
+                                                    >
+                                                      <ChevronLeft
+                                                        className={`w-3 h-3 transition-transform duration-300 ${
+                                                          expandedSubCategory === subCategory.id
+                                                            ? "transform rotate-90"
+                                                            : ""
+                                                        }`}
+                                                      />
+                                                    </button>
+                                                  )}
+                                                </div>
+                                                
+                                                {/* Subcategory children */}
+                                                <AnimatePresence>
+                                                  {expandedSubCategory === subCategory.id && hasChildren(subCategory.id) && (
+                                                    <motion.ul
+                                                      initial={{ height: 0, opacity: 0 }}
+                                                      animate={{
+                                                        height: "auto",
+                                                        opacity: 1,
+                                                      }}
+                                                      exit={{ height: 0, opacity: 0 }}
+                                                      transition={{ duration: 0.3 }}
+                                                      className="mt-1 mb-2 space-y-1 pr-3 border-r border-gray-100"
+                                                    >
+                                                      {subCategoryChildren[subCategory.id]?.map((child) => (
+                                                        <li 
+                                                          key={child.id}
+                                                          className="text-xs text-gray-500 hover:text-pink-500"
+                                                        >
+                                                          <Link 
+                                                            href={`/category/${category.slug}/${subCategory.slug}/${child.slug}`}
+                                                            onClick={handleMobileLinkClick}
+                                                            className="block py-1"
+                                                          >
+                                                            {child.name}
+                                                          </Link>
+                                                        </li>
+                                                      ))}
+                                                    </motion.ul>
+                                                  )}
+                                                </AnimatePresence>
+                                              </li>
+                                            )
+                                          )}
+                                        </motion.ul>
+                                      )}
+                                    </AnimatePresence>
+                                  </li>
+                                ))}
+                              </ul>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    ) : item.text === "مجله آموزشی" ? (
+                      <div>
+                        <button
+                          className="flex items-center justify-between w-full text-right"
+                          onClick={toggleBlogCategories}
+                        >
+                          <span className="font-medium">{item.text}</span>
+                          <ChevronLeft
+                            className={`w-5 h-5 transition-transform duration-300 ${
+                              expandedBlogCategory ? "transform rotate-90" : ""
+                            }`}
+                          />
+                        </button>
+  
+                        <AnimatePresence>
+                          {expandedBlogCategory && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.3 }}
+                              className="overflow-hidden"
+                            >
+                              <ul className="mt-2 space-y-2 pr-4 border-r border-gray-200">
+                                {blogCategories.map((category) => (
+                                  <li
+                                    key={category.id}
+                                    className="text-sm text-gray-600 hover:text-pink-500"
+                                  >
+                                    <Link 
+                                      href="/blog" 
+                                      onClick={handleMobileLinkClick}
+                                      className="block py-1"
+                                    >
+                                      {category.name}
+                                    </Link>
+                                  </li>
+                                ))}
+                              </ul>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    ) : (
+                      <Link
+                        href={item.href}
+                        className="block font-medium hover:text-pink-500"
+                        onClick={handleMobileLinkClick}
                       >
-                        <span className="font-medium">{item.text}</span>
-                        <ChevronLeft
-                          className={`w-5 h-5 transition-transform duration-300 ${
-                            expandedBlogCategory ? "transform rotate-90" : ""
-                          }`}
-                        />
-                      </button>
-
-                      <AnimatePresence>
-                        {expandedBlogCategory && (
-                          <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: "auto", opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.3 }}
-                            className="overflow-hidden"
-                          >
-                            <ul className="mt-2 space-y-2 pr-4 border-r border-gray-200">
-                              {blogCategories.map((category) => (
-                                <li
-                                  key={category.id}
-                                  className="text-sm text-gray-600 hover:text-pink-500"
-                                >
-                                  {category.name}
-                                </li>
-                              ))}
-                            </ul>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  ) : (
-                    <Link
-                      href={item.href}
-                      className="block font-medium hover:text-pink-500"
-                    >
-                      {item.text}
-                    </Link>
-                  )}
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-8 pt-6 border-t border-gray-200">
-              <button className="w-full bg-pink-500 text-white py-2 rounded-md hover:bg-pink-600 transition-colors">
-                عضویت
-              </button>
-              <div className="flex items-center justify-center mt-4 gap-2">
-                <Phone className="w-5 h-5 text-gray-600" />
-                <span className="text-gray-700">۰۹۱۲۳۴۵۶۷۸۹</span>
+                        {item.text}
+                      </Link>
+                    )}
+                  </li>
+                ))}
+              </ul>
+  
+              <div className="mt-8 pt-6 border-t border-gray-200">
+                <button className="w-full bg-pink-500 text-white py-2 rounded-md hover:bg-pink-600 transition-colors">
+                  عضویت
+                </button>
+                <div className="flex items-center justify-center mt-4 gap-2">
+                  <Phone className="w-5 h-5 text-gray-600" />
+                  <span className="text-gray-700">۰۹۱۲۳۴۵۶۷۸۹</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Overlay */}
-        {isMenuOpen && (
+  
+          {/* Overlay */}
+          {isMenuOpen && (
+            <div
+              className="fixed inset-0 bg-black bg-opacity-50 md:hidden"
+              style={{ zIndex: 30 }}
+              onClick={() => setIsMenuOpen(false)}
+            />
+          )}
+        </nav>
+  
+        {/* Full-width Mega Menu positioned outside the nav container */}
+        {isMegaMenuOpen && (
           <div
-            className="fixed inset-0 bg-black bg-opacity-50 md:hidden"
-            style={{ zIndex: 30 }}
-            onClick={() => setIsMenuOpen(false)}
-          />
+            ref={megaMenuRef}
+            className="absolute top-full left-0 right-0 w-full z-40"
+            onMouseEnter={handleMegaMenuEnter}
+            onMouseLeave={handleMegaMenuLeave}
+          >
+            <MegaMenu isOpen={isMegaMenuOpen} />
+          </div>
         )}
-      </nav>
-
-      {/* Full-width Mega Menu positioned outside the nav container */}
-      {isMegaMenuOpen && (
-        <div
-          ref={megaMenuRef}
-          className="absolute top-full left-0 right-0 w-full z-40"
-          onMouseEnter={handleMegaMenuEnter}
-          onMouseLeave={handleMegaMenuLeave}
-        >
-          <MegaMenu isOpen={isMegaMenuOpen} />
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default Navbar;
+      </div>
+    );
+  };
+  
+  export default Navbar;
+  

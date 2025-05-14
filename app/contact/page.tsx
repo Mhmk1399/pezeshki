@@ -1,3 +1,11 @@
+import ContactWithUs from "@/components/ContactWithUs"
+
 export default function contact() {
-    return <h1>contact Page</h1>
+    return (
+        <>
+        
+        <ContactWithUs />
+        
+        </>
+    )
 }
