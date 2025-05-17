@@ -3,6 +3,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, useAnimation, PanInfo } from "framer-motion";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import Image from 'next/image'
+
 
 const cardsData = [
   {
@@ -57,10 +59,11 @@ const cardsData = [
 ];
 
 const CardSlider: React.FC = () => {
-  const [[page, direction], setPage] = useState([0, 0]);
+  const [[page], setPage] = useState([0, 0]);
+  // direction
   const [cardsPerView, setCardsPerView] = useState(3);
   const [isDragging, setIsDragging] = useState(false);
-  const [isHovered, setIsHovered] = useState<number | null>(null);
+  // const [isHovered, setIsHovered] = useState<number | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const [activeCard, setActiveCard] = useState<number | null>(null);
   const [isAutoplayPaused, setIsAutoplayPaused] = useState(false);
@@ -198,24 +201,24 @@ const CardSlider: React.FC = () => {
     initial: { scale: 1 },
     hover: { scale: 1.1, backgroundColor: "#9f1239" },
     tap: { scale: 0.95 },
-    disabled: { opacity: 0.5, scale: 1 }
+    disabled: { opacity: 0.5, scale: 1 },
   };
 
   // Card animation variants
   const cardVariants = {
     initial: { opacity: 0, scale: 0.9 },
     animate: { opacity: 1, scale: 1, transition: { duration: 0.3 } },
-    hover: { y: -10, transition: { duration: 0.3 } }
+    hover: { y: -10, transition: { duration: 0.3 } },
   };
 
   // Front box animation variants
   const frontBoxVariants = {
     initial: { y: 20, opacity: 0, scale: 0.9 },
     animate: { y: 0, opacity: 1, scale: 1, transition: { duration: 0.4 } },
-    hover: { 
+    hover: {
       y: -5,
-      transition: { duration: 0.3, ease: "easeOut" }
-    }
+      transition: { duration: 0.3, ease: "easeOut" },
+    },
   };
 
   return (
@@ -235,7 +238,7 @@ const CardSlider: React.FC = () => {
         >
           <ChevronLeft size={24} />
         </motion.button>
-        
+
         <motion.button
           variants={buttonVariants}
           initial="initial"
@@ -244,7 +247,9 @@ const CardSlider: React.FC = () => {
           onClick={() => paginate(1)}
           disabled={page >= maxVisibleIndex}
           className={`bg-pink-600 text-white p-3 rounded-full overflow-hidden shadow-md ${
-            page >= maxVisibleIndex ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+            page >= maxVisibleIndex
+              ? "opacity-50 cursor-not-allowed"
+              : "cursor-pointer"
           }`}
           aria-label="Next slide"
         >
@@ -317,43 +322,61 @@ const CardSlider: React.FC = () => {
               >
                 <div className="relative">
                   {/* Image container */}
-                  <motion.div 
+                  <motion.div
                     className="rounded-2xl overflow-hidden"
                     whileHover={{ scale: 1.03 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <img
+                    {/* <img
                       src={card.image}
                       alt={card.title}
                       className="w-full h-80 object-cover transition duration-300"
                       style={{
-                        filter: activeCard === index ? "grayscale(0)" : "grayscale(100%)",
+                        filter:
+                          activeCard === index
+                            ? "grayscale(0)"
+                            : "grayscale(100%)",
                       }}
                       draggable="false" // Prevent default image dragging
+                    /> */}
+
+                    <Image
+                       src={card.image}
+                       alt={card.title}
+                       className="w-full h-80 object-cover transition duration-300"
+                       style={{
+                         filter:
+                           activeCard === index
+                             ? "grayscale(0)"
+                             : "grayscale(100%)",
+                       }}
+                       draggable="false" // Prevent default image dragging
+                      width={1000}
+                      height={1000}
                     />
                   </motion.div>
 
                   {/* Card title that overlaps the bottom of the image */}
-                  <motion.div 
+                  <motion.div
                     className="absolute bottom-0 left-0 right-0 transform translate-y-1/2 pointer-events-none"
                     variants={frontBoxVariants}
                     initial="initial"
                     animate="animate"
                     whileHover="hover"
                   >
-                    <motion.div 
+                    <motion.div
                       className="bg-white p-5 rounded-2xl shadow-lg mx-auto w-4/5"
                       initial={{ backgroundColor: "#ffffff" }}
-                      whileHover={{ 
+                      whileHover={{
                         backgroundColor: "#fdf2f8",
-                        transition: { duration: 0.2 }
+                        transition: { duration: 0.2 },
                       }}
                     >
                       <div
                         className="flex justify-between items-center"
                         dir="rtl"
                       >
-                        <motion.h3 
+                        <motion.h3
                           className="text-xl pr-2 font-bold border-r-2 border-pink-600 border-solid"
                           initial={{ x: -20, opacity: 0 }}
                           animate={{ x: 0, opacity: 1 }}
@@ -361,17 +384,20 @@ const CardSlider: React.FC = () => {
                         >
                           {card.title}
                         </motion.h3>
-                        <motion.span 
+                        <motion.span
                           className="px-3 py-1 bg-pink-100 text-pink-700 rounded-full text-sm font-medium"
                           initial={{ scale: 0.8, opacity: 0 }}
                           animate={{ scale: 1, opacity: 1 }}
                           transition={{ delay: 0.2, duration: 0.3 }}
-                          whileHover={{ scale: 1.05, backgroundColor: "#f9a8d4" }}
+                          whileHover={{
+                            scale: 1.05,
+                            backgroundColor: "#f9a8d4",
+                          }}
                         >
                           {card.work}
                         </motion.span>
                       </div>
-                      <motion.p 
+                      <motion.p
                         className="mt-3 text-gray-600 text-right pr-2"
                         initial={{ y: 10, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
@@ -379,20 +405,23 @@ const CardSlider: React.FC = () => {
                       >
                         {card.description}
                       </motion.p>
-                      
-                      <motion.div 
+
+                      <motion.div
                         className="mt-4 text-right"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         transition={{ delay: 0.4, duration: 0.3 }}
                       >
-                        <motion.button 
+                        <motion.button
                           className="text-pink-600 font-medium inline-flex items-center"
                           whileHover={{ x: 5 }}
                           whileTap={{ scale: 0.95 }}
                         >
                           مطالعه بیشتر
-                          <ArrowRight size={16} className="mr-1 rtl:rotate-180" />
+                          <ArrowRight
+                            size={16}
+                            className="mr-1 rtl:rotate-180"
+                          />
                         </motion.button>
                       </motion.div>
                     </motion.div>
@@ -403,7 +432,7 @@ const CardSlider: React.FC = () => {
           </div>
         </motion.div>
       </div>
-      
+
       {/* Pagination dots */}
       <div className="flex justify-center mt-16 space-x-2">
         {Array.from({ length: maxVisibleIndex + 1 }).map((_, index) => (
@@ -413,7 +442,7 @@ const CardSlider: React.FC = () => {
             initial={false}
             animate={{
               scale: page === index ? 1.2 : 1,
-              backgroundColor: page === index ? "#db2777" : "#d1d5db"
+              backgroundColor: page === index ? "#db2777" : "#d1d5db",
             }}
             onClick={() => setPage([index, page < index ? 1 : -1])}
             whileHover={{ scale: 1.3 }}

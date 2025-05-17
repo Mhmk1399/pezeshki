@@ -21,7 +21,10 @@ const services: Service[] = [
 const ServiceSlider: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [cardsPerView, setCardsPerView] = useState(4);
-  const [sliderWidth, setSliderWidth] = useState(0);
+  // const [setSliderWidth] = useState(0);
+  // sliderWidth
+  const [sliderWidthValue, setSliderWidthValue] = useState(0);
+  console.log(sliderWidthValue)
   const [cardWidth, setCardWidth] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [autoplayEnabled, setAutoplayEnabled] = useState(true);
@@ -48,7 +51,7 @@ const ServiceSlider: React.FC = () => {
 
       if (sliderRef.current) {
         const containerWidth = sliderRef.current.clientWidth;
-        setSliderWidth(containerWidth);
+        setSliderWidthValue(containerWidth);
         setCardWidth(containerWidth / newCardsPerView);
       }
     };

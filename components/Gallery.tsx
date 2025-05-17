@@ -4,6 +4,8 @@ import { useState, useRef } from "react";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import { Search, X, ExternalLink } from "lucide-react";
 import { Star, Sparkles, Scissors, Palette } from "lucide-react";
+import Image from 'next/image'
+
 
 // Sample gallery items - replace with your actual data
 const galleryItems = [
@@ -137,27 +139,27 @@ export default function Gallery() {
     },
   };
 
-  const buttonVariants = {
-    inactive: {
-      backgroundColor: "rgb(252, 231, 243)",
-      scale: 1,
-    },
-    active: {
-      backgroundColor: "rgb(244, 114, 182)",
-      color: "white",
-      scale: 1.05,
-      boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.1)",
-    },
-    hover: {
-      scale: 1.1,
-      transition: {
-        duration: 0.2,
-      },
-    },
-    tap: {
-      scale: 0.95,
-    },
-  };
+  // const buttonVariants = {
+  //   inactive: {
+  //     backgroundColor: "rgb(252, 231, 243)",
+  //     scale: 1,
+  //   },
+  //   active: {
+  //     backgroundColor: "rgb(244, 114, 182)",
+  //     color: "white",
+  //     scale: 1.05,
+  //     boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.1)",
+  //   },
+  //   hover: {
+  //     scale: 1.1,
+  //     transition: {
+  //       duration: 0.2,
+  //     },
+  //   },
+  //   tap: {
+  //     scale: 0.95,
+  //   },
+  // };
 
   const modalVariants = {
     hidden: { opacity: 0, scale: 0.8 },
@@ -183,7 +185,13 @@ export default function Gallery() {
       dir="rtl"
       className="py-16 px-4 bg-gradient-to-b from-white to-pink-50 relative"
     >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 170"><path fill="pink" fillOpacity="1" d="M0,96L120,106.7C240,117,480,139,720,138.7C960,139,1200,117,1320,106.7L1440,96L1440,320L1320,320C1200,320,960,320,720,320C480,320,240,320,120,320L0,320Z"></path></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 170">
+        <path
+          fill="pink"
+          fillOpacity="1"
+          d="M0,96L120,106.7C240,117,480,139,720,138.7C960,139,1200,117,1320,106.7L1440,96L1440,320L1320,320C1200,320,960,320,720,320C480,320,240,320,120,320L0,320Z"
+        ></path>
+      </svg>
       {/* Decorative elements */}
       <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-white to-transparent z-10"></div>
       <div className="absolute top-40 right-0 w-32 h-32 bg-pink-100 rounded-full opacity-20"></div>
@@ -207,16 +215,16 @@ export default function Gallery() {
 
         {/* Filter buttons */}
         <motion.div
-  className="flex justify-center items-center gap-1 sm:gap-4 mb-10 w-full"
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.5, delay: 0.2 }}
->
-{categories.map((category) => (
-  <motion.button
-    key={category.id}
-    onClick={() => handleFilterChange(category.id)}
-    className={`
+          className="flex justify-center items-center gap-1 sm:gap-4 mb-10 w-full"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          {categories.map((category) => (
+            <motion.button
+              key={category.id}
+              onClick={() => handleFilterChange(category.id)}
+              className={`
       rounded-full py-1 px-2 sm:py-2.5 sm:px-4 text-xs sm:text-base font-medium cursor-pointer 
       flex items-center justify-center gap-1 sm:gap-2 transition-all duration-300
       min-w-[80px] sm:min-w-[100px] h-[32px] sm:h-[40px]
@@ -226,33 +234,29 @@ export default function Gallery() {
           : "bg-white text-gray-700 border border-pink-100 shadow-sm hover:bg-pink-50"
       }
     `}
-    whileHover={{ scale: 1.05 }}
-    whileTap={{ scale: 0.95 }}
-    // Add these animation properties to ensure the button stays visible
-    initial={{ opacity: 1 }}
-    animate={{ opacity: 1 }}
-    exit={{ opacity: 1 }}
-    transition={{ duration: 0 }}
-  >
-    <motion.span
-      className={`${
-        activeFilter === category.id ? "text-white" : "text-pink-500"
-      } text-sm sm:text-base flex-shrink-0`}
-      animate={{
-        rotate: activeFilter === category.id ? [0, 15, 0, -15, 0] : 0,
-      }}
-      transition={{ duration: 0.5, ease: "easeInOut" }}
-    >
-      {category.icon}
-    </motion.span>
-    <span className="truncate">
-      {category.label}
-    </span>
-  </motion.button>
-))}
-</motion.div>
-
-
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              // Add these animation properties to ensure the button stays visible
+              initial={{ opacity: 1 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 1 }}
+              transition={{ duration: 0 }}
+            >
+              <motion.span
+                className={`${
+                  activeFilter === category.id ? "text-white" : "text-pink-500"
+                } text-sm sm:text-base flex-shrink-0`}
+                animate={{
+                  rotate: activeFilter === category.id ? [0, 15, 0, -15, 0] : 0,
+                }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+              >
+                {category.icon}
+              </motion.span>
+              <span className="truncate">{category.label}</span>
+            </motion.button>
+          ))}
+        </motion.div>
 
         {/* Gallery grid */}
         <div ref={galleryRef}>
@@ -378,9 +382,16 @@ export default function Gallery() {
               </button>
 
               <div className="w-full md:w-2/3 h-64 md:h-auto relative">
-                <img
+                {/* <img
                   src={selectedItem.image}
                   alt={selectedItem.title}
+                  className="w-full h-full object-cover"
+                /> */}
+                <Image
+                  src={selectedItem.image}
+                  alt={selectedItem.title}
+                  width={1000}
+                  height={1000}
                   className="w-full h-full object-cover"
                 />
               </div>

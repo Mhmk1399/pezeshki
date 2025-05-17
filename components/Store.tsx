@@ -16,7 +16,8 @@ const cardsData = [
 ];
 
 const CardSlider: React.FC = () => {
-  const [[page, direction], setPage] = useState([0, 0]);
+  const [[page], setPage] = useState([0, 0]);
+  // direction
   const [cardsPerView, setCardsPerView] = useState(4);
   const [isDragging, setIsDragging] = useState(false);
   const [isHovered, setIsHovered] = useState<number | null>(null);

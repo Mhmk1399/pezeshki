@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
-import { motion, useAnimation } from "framer-motion";
+import { motion, PanInfo, useAnimation } from "framer-motion";
 import {
   Sparkles,
   Scissors,
@@ -51,11 +51,14 @@ const services: Service[] = [
 const ServiceSlider: React.FC = () => {
   const [[page], setPage] = useState([0, 0]);
   const [cardsPerView, setCardsPerView] = useState(4);
-  const [setIsDragging] = useState(false);
+  // const [setIsDragging] = useState(false);
+  // isDragging
   const [isHovered, setIsHovered] = useState<number | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const sliderRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isDraggingState, setIsDraggingState] = useState(false);
+  console.log(isDraggingState)
 
   // Motion values
   const controls = useAnimation();
@@ -223,13 +226,13 @@ const ServiceSlider: React.FC = () => {
 
   // Handle drag gestures
   const handleDragStart = () => {
-    setIsDragging(true);
+    setIsDraggingState(true);
   };
   const handleDragEnd = (
     e: MouseEvent | TouchEvent | PointerEvent,
-    info: any
+    info: PanInfo
   ) => {
-    setIsDragging(false);
+    setIsDraggingState(false);
 
     const threshold = getCardWidth() / 3;
     const offset = info.offset.x;

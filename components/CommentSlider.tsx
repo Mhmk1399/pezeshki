@@ -1,10 +1,8 @@
 "use client";
 
+import Image from 'next/image'
 import React, { useEffect, useState, useRef } from "react";
-import {
-  motion,
-  useMotionValue,
-} from "framer-motion";
+import { motion, PanInfo, useMotionValue } from "framer-motion";
 
 type Comment = {
   id: number;
@@ -69,9 +67,12 @@ const comments: Comment[] = [
 const CommentSlider: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [autoSlide, setAutoSlide] = useState(true);
-  const [isDragging, setIsDragging] = useState(false);
+  const [isDragging ,setIsDragging] = useState(false);
+  console.log(isDragging);
+
   const [isHovering, setIsHovering] = useState(false);
-  const [direction, setDirection] = useState(0); // -1 for up, 1 for down
+  const [direction , setDirection] = useState(0); // -1 for up, 1 for down
+  console.log(direction)
 
   // Motion values
   const y = useMotionValue(0);
@@ -102,11 +103,10 @@ const CommentSlider: React.FC = () => {
     setIsDragging(true);
     setAutoSlide(false);
   };
-
   // Handle drag end
   const handleDragEnd = (
-    event: MouseEvent | TouchEvent | PointerEvent,
-    info: any
+    e: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo
   ) => {
     setIsDragging(false);
 
@@ -142,10 +142,10 @@ const CommentSlider: React.FC = () => {
 
   // Render a comment card
   const renderCommentCard = (
-    index: number, 
-    zIndex: number, 
-    scale: number, 
-    yOffset: number, 
+    index: number,
+    zIndex: number,
+    scale: number,
+    yOffset: number,
     opacity: number,
     isActive: boolean = false
   ) => {
@@ -165,12 +165,12 @@ const CommentSlider: React.FC = () => {
           type: "spring",
           stiffness: 300,
           damping: 30,
-          opacity: { duration: 0.2 }
+          opacity: { duration: 0.2 },
         }}
       >
-        <div 
+        <div
           className={`bg-white rounded-2xl shadow-xl p-8 text-right mx-auto h-full flex flex-col ${
-            !isActive ? 'filter blur-[1px]' : ''
+            !isActive ? "filter blur-[1px]" : ""
           }`}
         >
           {/* Quote icon */}
@@ -182,19 +182,22 @@ const CommentSlider: React.FC = () => {
             <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
           </svg>
 
-          <p className="text-lg text-gray-700 mb-6 flex-grow">
-            {comment.text}
-          </p>
+          <p className="text-lg text-gray-700 mb-6 flex-grow">{comment.text}</p>
 
           {/* Author information */}
           <div className="flex items-center justify-start mt-auto">
             {comment.avatar && (
-              <div
-                className="w-12 h-12 rounded-full overflow-hidden border-2 border-pink-200 mr-4"
-              >
-                <img
+              <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-pink-200 mr-4">
+                {/* <img
                   src={comment.avatar}
                   alt={comment.author || "مشتری"}
+                  className="w-full h-full object-cover"
+                /> */}
+                <Image
+                  src={comment.avatar}
+                  alt={comment.author || "مشتری"}
+                  width={1000}
+                  height={1000}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -203,9 +206,7 @@ const CommentSlider: React.FC = () => {
               <p className="font-bold text-gray-800">
                 {comment.author || "مشتری"}
               </p>
-              <p className="text-sm text-pink-600">
-                {comment.role || ""}
-              </p>
+              <p className="text-sm text-pink-600">{comment.role || ""}</p>
             </div>
           </div>
         </div>
@@ -360,7 +361,7 @@ const CommentSlider: React.FC = () => {
               initial={false}
               animate={{
                 scale: currentIndex === index ? 1.2 : 1,
-                backgroundColor: currentIndex === index ? "#db2777" : "#d1d5db"
+                backgroundColor: currentIndex === index ? "#db2777" : "#d1d5db",
               }}
               onClick={() => {
                 setDirection(index > currentIndex ? 1 : -1);
@@ -377,4 +378,3 @@ const CommentSlider: React.FC = () => {
 };
 
 export default CommentSlider;
-

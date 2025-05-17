@@ -6,8 +6,9 @@ import {
   X,
   ChevronDown,
   ChevronLeft,
-  ChevronRight,
+
 } from "lucide-react";
+// ChevronRight
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import MegaMenu from "./megaMenu";
@@ -327,9 +328,9 @@ const Navbar: React.FC = () => {
     }
   };
 
-  const handleCategoryMouseLeave = () => {
-    setExpandedCategory(null);
-  };
+  // const handleCategoryMouseLeave = () => {
+  //   setExpandedCategory(null);
+  // };
   
   const toggleBlogCategories = () => {
     setExpandedBlogCategory(!expandedBlogCategory);

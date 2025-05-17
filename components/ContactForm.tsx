@@ -4,8 +4,9 @@ import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import DatePicker, {
   DateObject,
-  Calendar as DatePickerCalendar,
+  DatePickerRef
 } from "react-multi-date-picker";
+// Calendar as DatePickerCalendar,
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { Calendar, ChevronDown } from "lucide-react";
@@ -105,7 +106,7 @@ export default function ContactForm() {
   const skillRef = useRef<HTMLSelectElement>(null);
   const personRef = useRef<HTMLSelectElement>(null);
   const datePickerRef = useRef<HTMLDivElement>(null);
-  const datePickerCalendarRef = useRef<any>(null);
+  const datePickerCalendarRef = useRef<DatePickerRef>(null);
 
   // Get available skills based on selected category
   const availableSkills = selectedCategory
