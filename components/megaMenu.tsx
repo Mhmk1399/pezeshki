@@ -199,8 +199,9 @@ const MegaMenu: React.FC<MegaMenuProps> = ({ isOpen }) => {
                               initial="hidden"
                               animate="visible"
                             >
+                              {/* you can costomize the link here  with /category/${category.slug}/${subCategory.slug}*/}
                               <Link
-                                href={`/category/${category.slug}/${subCategory.slug}`}
+                                href={`/blog/sample`}
                                 className="block py-2 px-3 rounded-lg hover:bg-pink-50 transition-colors"
                               >
                                 {subCategory.name}
@@ -214,8 +215,9 @@ const MegaMenu: React.FC<MegaMenuProps> = ({ isOpen }) => {
                           animate={{ opacity: 1 }}
                           transition={{ delay: 0.3 }}
                         >
+                                                        {/* you can costomize the link here  with /category/${category.slug}*/}
                           <Link
-                            href={`/category/${category.slug}`}
+                            href={`/blog/sample`}
                             className="inline-flex items-center text-pink-600 font-medium hover:text-pink-700"
                           >
                             <span>مشاهده همه {category.name}</span>

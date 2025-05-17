@@ -95,13 +95,28 @@ const categories: Category[] = [
   },
 ];
 // Blog categories for dropdown
+
+// const blogCategories = [
+//   { id: 1, name: "سلامت و زیبایی", slug: "health-beauty" },
+//   { id: 2, name: "تغذیه", slug: "nutrition" },
+//   { id: 3, name: "مراقبت پوست", slug: "skin-care" },
+//   { id: 4, name: "مراقبت مو", slug: "hair-care" },
+//   { id: 5, name: "آرایش", slug: "makeup" },
+// ];
+
 const blogCategories = [
-  { id: 1, name: "سلامت و زیبایی", slug: "health-beauty" },
-  { id: 2, name: "تغذیه", slug: "nutrition" },
-  { id: 3, name: "مراقبت پوست", slug: "skin-care" },
-  { id: 4, name: "مراقبت مو", slug: "hair-care" },
-  { id: 5, name: "آرایش", slug: "makeup" },
+  { id: 1, name: "سلامت و زیبایی", slug: "" },
+  { id: 2, name: "تغذیه", slug: "" },
+  { id: 3, name: "مراقبت پوست", slug: "" },
+  { id: 4, name: "مراقبت مو", slug: "" },
+  { id: 5, name: "آرایش", slug: "" },
 ];
+
+
+
+// Define menu items
+
+
 
 // Define subcategory children for mobile menu
 interface SubCategoryChild {
@@ -443,7 +458,7 @@ const Navbar: React.FC = () => {
                   onClick={() => setIsMenuOpen(false)}
                   className="p-1 rounded-full hover:bg-gray-100"
                 >
-                  <X className="w-6 h-6 text-gray-500" />
+                  {/* <X className="w-6 h-6 text-gray-500" /> */}
                 </button>
               </div>
   
@@ -520,8 +535,9 @@ const Navbar: React.FC = () => {
                                                 className="text-sm"
                                               >
                                                 <div className="flex items-center justify-between py-1">
+                                                  {/* costumize the link with href={`/category/${category.slug}/${subCategory.slug}`} */}
                                                   <Link 
-                                                    href={`/category/${category.slug}/${subCategory.slug}`}
+                                                    href={`/blog`}
                                                     onClick={hasChildren(subCategory.id) ? undefined : handleMobileLinkClick}
                                                     className="text-gray-600 hover:text-pink-500"
                                                   >

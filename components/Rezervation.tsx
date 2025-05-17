@@ -5,8 +5,9 @@ import { motion } from "framer-motion";
 
 export default function Rezervation() {
   return (
-    <section className="bg-gradient-to-b from-gray-200 to-gray-100 p-4 md:p-8 lg:p-12">
-      <div className="max-w-6xl mx-auto">
+    <section className="bg-gradient-to-t from-pink-50 to-white p-4 md:p-8 lg:p-12 -mt-45">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 170"><path fill="pink" fillOpacity="1" d="M0,96L120,106.7C240,117,480,139,720,138.7C960,139,1200,117,1320,106.7L1440,96L1440,320L1320,320C1200,320,960,320,720,320C480,320,240,320,120,320L0,320Z"></path></svg>
+      <div className="max-w-6xl mx-auto mt-5">
         {/* Banner */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}

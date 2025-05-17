@@ -7,31 +7,31 @@ export default function Page() {
     {
       title: "دسته‌بندی مقالات",
       links: [
-        { text: "سلامت و زیبایی", href: "/blog/health-beauty" },
-        { text: "تغذیه", href: "/blog/nutrition" },
-        { text: "مراقبت پوست", href: "/blog/skin-care" },
-        { text: "مراقبت مو", href: "/blog/hair-care" },
-        { text: "آرایش", href: "/blog/makeup" }
+        { text: "سلامت و زیبایی", href: "/blog" },
+        { text: "تغذیه", href: "/blog" },
+        { text: "مراقبت پوست", href: "/blog" },
+        { text: "مراقبت مو", href: "/blog" },
+        { text: "آرایش", href: "/blog" }
       ]
     },
     {
       title: "مقالات پربازدید",
       links: [
-        { text: "راهنمای انتخاب محصولات مراقبت پوست", href: "/blog/skin-care-guide" },
-        { text: "بهترین روش‌های آرایش صورت", href: "/blog/makeup-tips" },
-        { text: "تغذیه مناسب برای پوست سالم", href: "/blog/nutrition-for-skin" },
-        { text: "روش‌های طبیعی تقویت مو", href: "/blog/natural-hair-care" },
-        { text: "اصول پایه آرایش چشم", href: "/blog/eye-makeup-basics" }
+        { text: "راهنمای انتخاب محصولات مراقبت پوست", href: "/blog" },
+        { text: "بهترین روش‌های آرایش صورت", href: "/blog" },
+        { text: "تغذیه مناسب برای پوست سالم", href: "/blog" },
+        { text: "روش‌های طبیعی تقویت مو", href: "/blog" },
+        { text: "اصول پایه آرایش چشم", href: "/blog" }
       ]
     },
     {
       title: "آخرین مطالب",
       links: [
-        { text: "ترندهای آرایشی سال ۱۴۰۲", href: "/blog/makeup-trends-2023" },
-        { text: "محصولات جدید مراقبت پوست", href: "/blog/new-skincare-products" },
-        { text: "راهنمای خرید لوازم آرایش", href: "/blog/makeup-buying-guide" },
-        { text: "روش‌های درمان خانگی مشکلات پوستی", href: "/blog/home-remedies-skin" },
-        { text: "مراقبت از پوست در فصل تابستان", href: "/blog/summer-skincare" }
+        { text: "ترندهای آرایشی سال ۱۴۰۲", href: "/blog" },
+        { text: "محصولات جدید مراقبت پوست", href: "/blog" },
+        { text: "راهنمای خرید لوازم آرایش", href: "/blog" },
+        { text: "روش‌های درمان خانگی مشکلات پوستی", href: "/blog" },
+        { text: "مراقبت از پوست در فصل تابستان", href: "/blog/" }
       ]
     }
   ];
@@ -42,11 +42,7 @@ export default function Page() {
       <div className="container mx-auto px-4 py-6">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Main content */}
-          <div className="w-full lg:w-3/4 order-2 lg:order-1">
-            <h1 className="text-3xl font-bold text-pink-500 mb-6 text-center lg:text-right">مجله آموزشی</h1>
-            <p className="text-gray-600 mb-8 text-center lg:text-right">
-              آخرین مقالات و راهنماهای تخصصی در حوزه سلامت و زیبایی را در اینجا مطالعه کنید
-            </p>
+          <div className="w-full lg:w-3/4 order-2 lg:order-1 md:-mt-8">
             <Gallery />
           </div>
           

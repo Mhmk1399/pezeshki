@@ -1,5 +1,3 @@
-import Image from "next/image";
-import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import Intro from "../components/Intro";
 import ServiceSlider from "../components/ServiceSlider";
@@ -14,7 +12,6 @@ import Rezervation from "@/components/Rezervation";
 import PriceList from "@/components/PriceList";
 import News from "@/components/News";
 import Store from "@/components/Store";
-import Footer from "@/components/Footer";
 import AnnouncementBar from "@/components/announceBar";
 
 export default function Home() {

@@ -342,53 +342,74 @@ const TeamMembers: React.FC = () => {
   };
 
   // Handle dot navigation
-  const handleDotClick = (index: number) => {
-    setCurrentIndex(index);
-  };
+  // const handleDotClick = (index: number) => {
+  //   setCurrentIndex(index);
+  // };
 
   return (
-    <section className="py-16 px-4 bg-gradient-to-b from-pink-50 to-white">
-      {/* Decorative elements */}
-      <div className="absolute top-20 left-10 w-32 h-32 bg-pink-100 rounded-full opacity-30 blur-xl"></div>
-      <div className="absolute bottom-20 right-10 w-40 h-40 bg-pink-200 rounded-full opacity-30 blur-xl"></div>
+    <section className="py-16 px-4 bg-gradient-to-b from-pink-50 to-white relative">
+  {/* Decorative elements */}
+  <div className="absolute top-20 left-10 w-32 h-32 bg-pink-100 rounded-full opacity-30 blur-xl"></div>
+  <div className="absolute bottom-20 right-10 w-40 h-40 bg-pink-200 rounded-full opacity-30 blur-xl"></div>
 
-      <div className="max-w-6xl mx-auto">
-        <motion.div
-          className="text-center mb-12"
-          initial={{ opacity: 0, y: -20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-          viewport={{ once: true }}
+  {/* SVG background - positioned outside the animated container */}
+  <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
+    <svg 
+      xmlns="http://www.w3.org/2000/svg" 
+      viewBox="0 0 1440 300" 
+      className="absolute left-0 w-full"
+      style={{ top: "200px", zIndex: 0 }} // Adjust top value as needed
+    >
+      <path 
+        fill="pink" 
+        fillOpacity="1" 
+        d="M0,96L120,106.7C240,117,480,139,720,138.7C960,139,1200,117,1320,106.7L1440,96L1440,320L1320,320C1200,320,960,320,720,320C480,320,240,320,120,320L0,320Z"
+      ></path>
+    </svg>
+  </div>
+
+  <div className="max-w-6xl mx-auto relative">
+    <motion.div
+      className="text-center mb-12 relative z-10" // Add z-10 to ensure content is above SVG
+      initial={{ opacity: 0, y: -20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.7 }}
+      viewport={{ once: true }}
+    >
+      <motion.span
+        className="inline-block px-4 py-1.5 bg-pink-100 text-pink-600 rounded-full text-sm font-medium mb-3"
+        initial={{ opacity: 0, scale: 0.8 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.2, duration: 0.5 }}
+        viewport={{ once: true }}
+      >
+        تیم ما
+      </motion.span>
+      <div className="relative">
+        <h2
+          className="text-3xl md:text-4xl font-bold text-gray-800 mb-4"
+          dir="rtl"
         >
-          <motion.span
-            className="inline-block px-4 py-1.5 bg-pink-100 text-pink-600 rounded-full text-sm font-medium mb-3"
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-            viewport={{ once: true }}
-          >
-            تیم ما
-          </motion.span>
-          <h2
-            className="text-3xl md:text-4xl font-bold text-gray-800 mb-4"
-            dir="rtl"
-          >
-            تیم متخصصین ما
-          </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto" dir="rtl">
-            با تیم متخصص و حرفه‌ای ما آشنا شوید. ما با افتخار خدمات زیبایی با
-            کیفیت را به شما ارائه می‌دهیم.
-          </p>
+          تیم متخصصین ما
+        </h2>
+        <p className="text-gray-600 max-w-2xl mx-auto" dir="rtl">
+          با تیم متخصص و حرفه‌ای ما آشنا شوید. ما با افتخار خدمات زیبایی با
+          کیفیت را به شما ارائه می‌دهیم.
+        </p>
+      </div>
 
-          {/* Decorative element */}
-          <motion.div
-            className="w-24 h-1 bg-gradient-to-r from-pink-300 to-pink-500 mx-auto mt-6 rounded-full"
-            initial={{ width: 0 }}
-            whileInView={{ width: 96 }}
-            transition={{ delay: 0.5, duration: 0.8 }}
-            viewport={{ once: true }}
-          />
-        </motion.div>
+      {/* Remove the SVG from here */}
+
+      {/* Decorative element */}
+      <motion.div
+        className="w-24 h-1 bg-gradient-to-r from-pink-300 to-pink-500 mx-auto mt-6 rounded-full"
+        initial={{ width: 0 }}
+        whileInView={{ width: 96 }}
+        transition={{ delay: 0.5, duration: 0.8 }}
+        viewport={{ once: true }}
+      />
+    </motion.div>
+
 
                        {/* Slider container with touch and drag support */}
         <div className="relative overflow-hidden">

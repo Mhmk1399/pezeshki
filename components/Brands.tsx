@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
-import { motion, PanInfo, useAnimation } from "framer-motion";
+import { motion, useAnimation } from "framer-motion";
 import {
   Sparkles,
   Scissors,
@@ -49,9 +49,9 @@ const services: Service[] = [
 ];
 
 const ServiceSlider: React.FC = () => {
-  const [[page, direction], setPage] = useState([0, 0]);
+  const [[page], setPage] = useState([0, 0]);
   const [cardsPerView, setCardsPerView] = useState(4);
-  const [isDragging, setIsDragging] = useState(false);
+  const [setIsDragging] = useState(false);
   const [isHovered, setIsHovered] = useState<number | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const sliderRef = useRef<HTMLDivElement>(null);
@@ -225,7 +225,6 @@ const ServiceSlider: React.FC = () => {
   const handleDragStart = () => {
     setIsDragging(true);
   };
-
   const handleDragEnd = (
     e: MouseEvent | TouchEvent | PointerEvent,
     info: any
@@ -253,7 +252,6 @@ const ServiceSlider: React.FC = () => {
       });
     }
   };
-
   return (
     <section className="py-16 px-4 bg-gradient-to-b from-pink-50 to-white overflow-hidden">
       <div className="max-w-7xl mx-auto text-center">

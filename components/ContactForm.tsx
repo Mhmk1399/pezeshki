@@ -2,7 +2,10 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import DatePicker, { DateObject } from "react-multi-date-picker";
+import DatePicker, {
+  DateObject,
+  Calendar as DatePickerCalendar,
+} from "react-multi-date-picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import { Calendar, ChevronDown } from "lucide-react";
@@ -102,6 +105,7 @@ export default function ContactForm() {
   const skillRef = useRef<HTMLSelectElement>(null);
   const personRef = useRef<HTMLSelectElement>(null);
   const datePickerRef = useRef<HTMLDivElement>(null);
+  const datePickerCalendarRef = useRef<any>(null);
 
   // Get available skills based on selected category
   const availableSkills = selectedCategory
@@ -171,12 +175,24 @@ export default function ContactForm() {
     return `${date.day} ${date.month.name} ${date.year}`;
   };
 
+  // Function to open the date picker and its calendar
+  const handleOpenDatePicker = () => {
+    setIsDatePickerOpen(true);
+
+    // Use setTimeout to ensure the DatePicker component is rendered before trying to open the calendar
+    setTimeout(() => {
+      if (datePickerCalendarRef.current) {
+        datePickerCalendarRef.current.openCalendar();
+      }
+    }, 0);
+  };
+
   return (
     <motion.section
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="border-b-2 border-gray-200 border-dashed mx-auto mt-4 sm:mt-6 md:mt-8 py-4 sm:py-6 md:py-8 px-4 sm:px-6 md:px-8 lg:px-16"
+      className="mx-auto mt-4 sm:mt-6 md:mt-8 py-4 sm:py-6 md:py-8 px-4 sm:px-6 md:px-8 lg:px-16"
     >
       <div className="flex flex-col items-center justify-center mb-4 sm:mb-6 md:mb-8">
         <motion.h1
@@ -196,7 +212,7 @@ export default function ContactForm() {
           initial="initial"
           whileHover="hover"
           whileTap="tap"
-          onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}
+          onClick={handleOpenDatePicker}
           className="w-full sm:w-auto text-base sm:text-lg md:text-xl bg-[#BC0060] text-white rounded-full h-10 md:h-12 px-4 sm:px-6 md:px-8 mb-3 sm:mb-0 flex items-center justify-center"
         >
           <Calendar className="ml-2" size={18} />
@@ -223,6 +239,7 @@ export default function ContactForm() {
               className="absolute mt-12 z-50"
             >
               <DatePicker
+                ref={datePickerCalendarRef}
                 calendar={persian}
                 locale={persian_fa}
                 calendarPosition="bottom-right"
@@ -233,6 +250,8 @@ export default function ContactForm() {
                 className="custom-calendar"
                 hideOnScroll
                 onlyShowInRangeDates
+                onOpen={() => {}} // This is needed to make the ref work properly
+                inputClass="hidden" // This hides the input field
               />
             </motion.div>
           )}
@@ -269,7 +288,7 @@ export default function ContactForm() {
               onFocus={() => setCategoryFocused(true)}
               onBlur={() => setCategoryFocused(false)}
               className="block w-full p-3 border border-gray-300 rounded-md text-gray-700 focus:outline-none appearance-none bg-white pr-4"
-              autoFocus
+              // autoFocus
             >
               <option value="">انتخاب کنید...</option>
               {categories.map((category) => (

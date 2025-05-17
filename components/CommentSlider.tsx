@@ -4,8 +4,6 @@ import React, { useEffect, useState, useRef } from "react";
 import {
   motion,
   useMotionValue,
-  useAnimation,
-  AnimatePresence,
 } from "framer-motion";
 
 type Comment = {

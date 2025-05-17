@@ -26,7 +26,7 @@ const galleryItems = [
     category: "skincare",
     image: "/image3.jpg",
     title: "گالری آیتم ۳",
-    description: "پاکسازی تخصصی پوست",
+    description: "پاکسازی",
   },
   {
     id: 4,
@@ -80,7 +80,7 @@ export default function Gallery() {
     { id: "all", label: "نمایش همه", icon: <Star className="w-4 h-4" /> },
     {
       id: "skincare",
-      label: "پاکسازی صورت",
+      label: "پاکسازی",
       icon: <Sparkles className="w-4 h-4" />,
     },
     { id: "hairstyle", label: "شنیون", icon: <Scissors className="w-4 h-4" /> },
@@ -183,6 +183,7 @@ export default function Gallery() {
       dir="rtl"
       className="py-16 px-4 bg-gradient-to-b from-white to-pink-50 relative"
     >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 170"><path fill="pink" fillOpacity="1" d="M0,96L120,106.7C240,117,480,139,720,138.7C960,139,1200,117,1320,106.7L1440,96L1440,320L1320,320C1200,320,960,320,720,320C480,320,240,320,120,320L0,320Z"></path></svg>
       {/* Decorative elements */}
       <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-white to-transparent z-10"></div>
       <div className="absolute top-40 right-0 w-32 h-32 bg-pink-100 rounded-full opacity-20"></div>
@@ -195,7 +196,7 @@ export default function Gallery() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-[#BC0060] mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#BC0060] mb-4 mt-4">
             گالری نمونه کارها
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto mb-6">
@@ -211,36 +212,44 @@ export default function Gallery() {
   animate={{ opacity: 1, y: 0 }}
   transition={{ duration: 0.5, delay: 0.2 }}
 >
-  {categories.map((category) => (
-    <motion.button
-      key={category.id}
-      onClick={() => handleFilterChange(category.id)}
-      className={`
-        rounded-full py-1 px-2 sm:py-2.5 sm:px-4 text-xs sm:text-base font-medium cursor-pointer 
-        flex items-center gap-1 sm:gap-2 transition-all duration-300
-        ${
-          activeFilter === category.id
-            ? "bg-pink-500 text-white shadow-lg shadow-pink-200"
-            : "bg-white text-gray-700 border border-pink-100 shadow-sm hover:bg-pink-50"
-        }
-      `}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
+{categories.map((category) => (
+  <motion.button
+    key={category.id}
+    onClick={() => handleFilterChange(category.id)}
+    className={`
+      rounded-full py-1 px-2 sm:py-2.5 sm:px-4 text-xs sm:text-base font-medium cursor-pointer 
+      flex items-center justify-center gap-1 sm:gap-2 transition-all duration-300
+      min-w-[80px] sm:min-w-[100px] h-[32px] sm:h-[40px]
+      ${
+        activeFilter === category.id
+          ? "bg-pink-500 text-white shadow-lg shadow-pink-200"
+          : "bg-white text-gray-700 border border-pink-100 shadow-sm hover:bg-pink-50"
+      }
+    `}
+    whileHover={{ scale: 1.05 }}
+    whileTap={{ scale: 0.95 }}
+    // Add these animation properties to ensure the button stays visible
+    initial={{ opacity: 1 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 1 }}
+    transition={{ duration: 0 }}
+  >
+    <motion.span
+      className={`${
+        activeFilter === category.id ? "text-white" : "text-pink-500"
+      } text-sm sm:text-base flex-shrink-0`}
+      animate={{
+        rotate: activeFilter === category.id ? [0, 15, 0, -15, 0] : 0,
+      }}
+      transition={{ duration: 0.5, ease: "easeInOut" }}
     >
-      <motion.span
-        className={`${
-          activeFilter === category.id ? "text-white" : "text-pink-500"
-        } text-sm sm:text-base`}
-        animate={{
-          rotate: activeFilter === category.id ? [0, 15, 0, -15, 0] : 0,
-        }}
-        transition={{ duration: 0.5, ease: "easeInOut" }}
-      >
-        {category.icon}
-      </motion.span>
+      {category.icon}
+    </motion.span>
+    <span className="truncate">
       {category.label}
-    </motion.button>
-  ))}
+    </span>
+  </motion.button>
+))}
 </motion.div>
 
 

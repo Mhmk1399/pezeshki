@@ -76,18 +76,18 @@ export default function Sample() {
         
         {/* quote section */}
         <div className="bg-pink-50 text-pink-700 p-4 sm:p-5 md:p-6 rounded-xl shadow-sm max-w-6xl mx-auto text-right leading-loose font-medium">
-          <div className="flex justify-end text-2xl sm:text-3xl md:text-4xl mb-2 sm:mb-3 md:mb-4 text-pink-600">
+          {/* <div className="flex justify-end text-2xl sm:text-3xl md:text-4xl mb-2 sm:mb-3 md:mb-4 text-pink-600">
             <span>"</span>
-          </div>
+          </div> */}
           <p className="text-sm sm:text-base md:text-lg">
             یکی دیگه از نکات مهم اینه که اپیلاسیون برای افرادی که از داروهای خاص
             استفاده می‌کنن یا شرایط پوستی خاصی دارن (مثل پسوریازیس یا اگزما)
             ممکنه مناسب نباشه. این افراد باید قبل از تصمیم‌گیری درباره‌ی
             اپیلاسیون با پزشک مشورت کنن.
           </p>
-          <div className="flex justify-start text-2xl sm:text-3xl md:text-3xl mt-2 sm:mt-3 md:mt-4 text-pink-600">
+          {/* <div className="flex justify-start text-2xl sm:text-3xl md:text-3xl mt-2 sm:mt-3 md:mt-4 text-pink-600">
             <span>"</span>
-          </div>
+          </div> */}
         </div>
 
         {/* third part - checklist and image */}

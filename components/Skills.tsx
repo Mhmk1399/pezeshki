@@ -87,7 +87,9 @@ export default function Skills() {
   const [hoveredId, setHoveredId] = useState<number | null>(null);
 
   return (
+    
     <section className="relative py-16 bg-gradient-to-b from-white to-pink-50">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 170"><path fill="pink" fillOpacity="1" d="M0,96L120,106.7C240,117,480,139,720,138.7C960,139,1200,117,1320,106.7L1440,96L1440,320L1320,320C1200,320,960,320,720,320C480,320,240,320,120,320L0,320Z"></path></svg>
       <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-white to-transparent"></div>
 
       {/* Decorative elements */}
@@ -102,7 +104,7 @@ export default function Skills() {
           transition={{ duration: 0.5 }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-[#BC0060] mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#BC0060] mb-4 mt-4">
             تخصص های ما
           </h2>
           <div className="w-24 h-1 bg-pink-300 mx-auto rounded-full"></div>
