@@ -13,6 +13,7 @@ import PriceList from "@/components/PriceList";
 import News from "@/components/News";
 import Store from "@/components/Store";
 import AnnouncementBar from "@/components/announceBar";
+import RegisterForm from  "@/components/auth/RegisterForm"
 
 export default function Home() {
   return (
@@ -41,3 +42,4 @@ export default function Home() {
     </div>
   );
 }
+
